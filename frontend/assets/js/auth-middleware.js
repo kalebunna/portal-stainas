@@ -96,9 +96,7 @@ class AuthMiddleware {
       // Show error message if coming from a protected route
       if (currentRoute !== "login") {
         if (window.appToast) {
-          window.appToast.error(
-            "Silahkan login untuk mengakses dashboard admin."
-          );
+          window.appToast.error("Please login to access the admin dashboard.");
         }
       }
       return;
@@ -111,9 +109,7 @@ class AuthMiddleware {
     if (currentRoute === "settings" && !this.hasRole("admin")) {
       window.location.hash = "dashboard";
       if (window.appToast) {
-        window.appToast.error(
-          "Anda tidak memiliki izin untuk mengakses pengaturan."
-        );
+        window.appToast.error("You don't have permission to access settings.");
       }
       return;
     }
@@ -123,7 +119,7 @@ class AuthMiddleware {
       window.location.hash = "dashboard";
       if (window.appToast) {
         window.appToast.error(
-          "Anda tidak memiliki izin untuk mengakses halaman berita."
+          "You don't have permission to access the news page."
         );
       }
       return;
@@ -136,7 +132,7 @@ class AuthMiddleware {
       window.location.hash = "dashboard";
       if (window.appToast) {
         window.appToast.error(
-          "Anda tidak memiliki izin untuk mengakses halaman pengumuman."
+          "You don't have permission to access the announcements page."
         );
       }
       return;
@@ -159,43 +155,43 @@ class AuthMiddleware {
         permissions: [], // Everyone can access dashboard once logged in
       },
       {
-        title: "Berita",
+        title: "News",
         icon: "bi-newspaper",
         route: "berita",
         permissions: ["view-berita"],
       },
       {
-        title: "Pengumuman",
+        title: "Announcements",
         icon: "bi-megaphone",
         route: "pengumuman",
         permissions: ["view-pengumuman"],
       },
       {
-        title: "Agenda",
+        title: "Calendar",
         icon: "bi-calendar-event",
         route: "agenda",
         permissions: ["view-agenda"],
       },
       {
-        title: "Program Studi",
+        title: "Departments",
         icon: "bi-buildings",
         route: "prodi",
         permissions: ["view-prodi"],
       },
       {
-        title: "Kerjasama",
+        title: "Partnerships",
         icon: "bi-handshake",
         route: "kerjasama",
         permissions: ["view-kerjasama"],
       },
       {
-        title: "Mahasiswa",
+        title: "Students",
         icon: "bi-mortarboard",
         route: "mahasiswa",
         permissions: ["view-mahasiswa"],
       },
       {
-        title: "Karya Mahasiswa",
+        title: "Student Works",
         icon: "bi-journal-richtext",
         route: "karya",
         permissions: ["view-karya"],
@@ -331,7 +327,7 @@ class AuthMiddleware {
 
           if (window.appToast) {
             window.appToast.error(
-              "Sesi Anda telah berakhir. Silakan login kembali."
+              "Your session has expired. Please login again."
             );
           }
         }

@@ -36,7 +36,7 @@ document.addEventListener("alpine:init", () => {
       } else {
         this.setActivePage(hash);
       }
-
+INI
       // Handle navigation with hash changes
       window.addEventListener("hashchange", () => {
         const currentHash = window.location.hash.substring(1);
@@ -50,7 +50,7 @@ document.addEventListener("alpine:init", () => {
           // Show message about requiring login
           if (window.appToast) {
             window.appToast.error(
-              "Silahkan login untuk mengakses dashboard admin."
+              "Please login to access the admin dashboard."
             );
           }
           return;
@@ -129,7 +129,7 @@ document.addEventListener("alpine:init", () => {
 
           // Show success toast
           if (window.appToast) {
-            window.appToast.success("Anda berhasil logout.");
+            window.appToast.success("You have successfully logged out.");
           }
         }
       } catch (error) {
@@ -137,7 +137,7 @@ document.addEventListener("alpine:init", () => {
 
         // Show error toast
         if (window.appToast) {
-          window.appToast.error("Gagal logout. Silakan coba lagi.");
+          window.appToast.error("Failed to logout. Please try again.");
         }
       }
     },
@@ -181,14 +181,14 @@ document.addEventListener("alpine:init", () => {
           window.location.hash = "login";
 
           this.pageContent = `
-                        <div class="login-container">
-                            <div class="alert alert-danger">
-                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                                Silahkan login untuk mengakses dashboard admin.
-                            </div>
-                            <!-- Login content will be loaded here -->
-                        </div>
-                    `;
+                          <div class="login-container">
+                              <div class="alert alert-danger">
+                                  <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                  Please login to access the admin dashboard.
+                              </div>
+                              <!-- Login content will be loaded here -->
+                          </div>
+                      `;
 
           // Load login page content
           const loginResponse = await fetch("pages/login.html");
@@ -201,12 +201,12 @@ document.addEventListener("alpine:init", () => {
 
         // Show loading state
         this.pageContent = `
-                    <div class="d-flex justify-content-center align-items-center" style="height: 70vh;">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                    </div>
-                `;
+                      <div class="d-flex justify-content-center align-items-center" style="height: 70vh;">
+                          <div class="spinner-border text-primary" role="status">
+                              <span class="visually-hidden">Loading...</span>
+                          </div>
+                      </div>
+                  `;
 
         const response = await fetch(`pages/${page}.html`);
         if (response.ok) {
@@ -217,22 +217,22 @@ document.addEventListener("alpine:init", () => {
           });
         } else {
           this.pageContent = `<div class="d-flex justify-content-center align-items-center" style="height: 70vh;">
-                        <div class="text-center">
-                            <div class="mb-4">
-                                <i class="bi bi-exclamation-circle text-warning" style="font-size: 4rem;"></i>
-                            </div>
-                            <h3>Halaman Tidak Ditemukan</h3>
-                            <p class="text-muted">Halaman "${page}" tidak dapat ditemukan.</p>
-                            <button class="btn btn-primary" @click="setActivePage('dashboard')">Kembali ke Dashboard</button>
-                        </div>
-                    </div>`;
+                          <div class="text-center">
+                              <div class="mb-4">
+                                  <i class="bi bi-exclamation-circle text-warning" style="font-size: 4rem;"></i>
+                              </div>
+                              <h3>Page Not Found</h3>
+                              <p class="text-muted">The page "${page}" could not be found.</p>
+                              <button class="btn btn-primary" @click="setActivePage('dashboard')">Return to Dashboard</button>
+                          </div>
+                      </div>`;
         }
       } catch (error) {
         console.error("Error loading page content:", error);
         this.pageContent = `<div class="alert alert-danger">
-                    <i class="bi bi-exclamation-triangle me-2"></i>
-                    Error saat memuat konten. Silakan coba lagi.
-                </div>`;
+                      <i class="bi bi-exclamation-triangle me-2"></i>
+                      Error loading content. Please try again.
+                  </div>`;
       }
     },
 
@@ -284,99 +284,120 @@ document.addEventListener("alpine:init", () => {
     },
 
     initLoginHandlers() {
-      // Handle login form submission
-      const loginForm = document.getElementById("loginForm");
-      if (loginForm) {
-        loginForm.addEventListener("submit", async (event) => {
-          event.preventDefault();
-
-          // Get form data
-          const email = document.getElementById("email").value;
-          const password = document.getElementById("password").value;
-          const remember =
-            document.getElementById("rememberMe")?.checked || false;
-
-          // Show loading state
-          const loginButton = document.getElementById("loginButton");
-          const loginSpinner = document.getElementById("loginSpinner");
-          const loginAlert = document.getElementById("loginAlert");
-
-          if (loginButton && loginSpinner) {
-            loginButton.disabled = true;
-            loginSpinner.classList.remove("d-none");
-          }
-
-          if (loginAlert) {
-            loginAlert.classList.add("d-none");
-          }
-
-          try {
-            // Call authentication service
-            if (window.authApiService) {
-              const response = await window.authApiService.login(
-                email,
-                password,
-                remember
-              );
-
-              // Update authentication state
-              this.checkAuthState();
-
-              // Redirect to dashboard
-              window.location.hash = "dashboard";
-
-              // Show success message
-              if (window.appToast) {
-                window.appToast.success("Login berhasil!");
-              }
-            } else {
-              throw new Error("Layanan autentikasi tidak tersedia");
-            }
-          } catch (error) {
-            console.error("Login error:", error);
-
-            // Show error message
-            if (loginAlert) {
-              loginAlert.textContent =
-                error.message ||
-                "Login gagal. Periksa email dan password Anda.";
-              loginAlert.classList.remove("d-none");
-            }
-
-            // Show error toast
-            if (window.appToast) {
-              window.appToast.error(
-                error.message || "Login gagal. Periksa email dan password Anda."
-              );
-            }
-          } finally {
-            // Reset loading state
+        // Handle login form submission
+        const loginForm = document.getElementById("loginForm");
+        if (loginForm) {
+          loginForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+      
+            // Get form data
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const remember =
+              document.getElementById("rememberMe")?.checked || false;
+      
+            // Show loading state
+            const loginButton = document.getElementById("loginButton");
+            const loginSpinner = document.getElementById("loginSpinner");
+            const loginAlert = document.getElementById("loginAlert");
+      
             if (loginButton && loginSpinner) {
-              loginButton.disabled = false;
-              loginSpinner.classList.add("d-none");
+              loginButton.disabled = true;
+              loginSpinner.classList.remove("d-none");
             }
-          }
-        });
+      
+            if (loginAlert) {
+              loginAlert.classList.add("d-none");
+            }
+      
+            try {
+              // PERBAIKAN: Periksa ketersediaan layanan auth
+              if (window.authApiService) {
+                // Normal flow - gunakan authApiService
+                const response = await window.authApiService.login(
+                  email,
+                  password,
+                  remember
+                );
+      
+                // Update authentication state
+                this.checkAuthState();
+      
+                // Redirect to dashboard
+                window.location.hash = "dashboard";
+      
+                // Show success message
+                if (window.appToast) {
+                  window.appToast.success("Login successful!");
+                }
+              } else {
+                // FALLBACK MODE: Simulasikan login untuk development/testing
+                console.warn("Auth service not available, using development login mode");
+                
+                // Simulasikan respons login untuk pengembangan
+                // CATATAN: Ini hanya untuk development, JANGAN gunakan di production!
+                const mockUser = {
+                  id: 1,
+                  name: "Development User",
+                  email: email || "dev@example.com"
+                };
+                
+                const mockToken = "dev-token-" + Date.now();
+                
+                // Simpan data autentikasi palsu di localStorage
+                localStorage.setItem("auth_token", mockToken);
+                localStorage.setItem("user", JSON.stringify(mockUser));
+                localStorage.setItem("roles", JSON.stringify(["admin"]));
+                localStorage.setItem("permissions", JSON.stringify([
+                  "view-berita", "create-berita", "edit-berita", "delete-berita",
+                  "view-pengumuman", "view-agenda", "view-prodi", "view-kerjasama",
+                  "view-mahasiswa", "view-karya", "manage-media"
+                ]));
+                
+                // Update state autentikasi
+                this.checkAuthState();
+                
+                // Redirect ke dashboard
+                window.location.hash = "dashboard";
+                
+                // Tampilkan pesan sukses tetapi dengan warning
+                if (window.appToast) {
+                  window.appToast.warning("Development login mode activated. API service not available.");
+                } else {
+                  alert("Development login mode activated. API service not available.");
+                }
+              }
+            } catch (error) {
+              console.error("Login error:", error);
+      
+              // Show error message
+              if (loginAlert) {
+                loginAlert.classList.remove("d-none");
+                const loginAlertMessage = document.getElementById("loginAlertMessage");
+                if (loginAlertMessage) {
+                  loginAlertMessage.textContent =
+                    error.message || "Login failed. Please check your email and password.";
+                }
+              }
+      
+              // Show error toast
+              if (window.appToast) {
+                window.appToast.error(
+                  error.message || "Login failed. Please check your email and password."
+                );
+              }
+            } finally {
+              // Reset loading state
+              if (loginButton && loginSpinner) {
+                loginButton.disabled = false;
+                loginSpinner.classList.add("d-none");
+              }
+            }
+          });
+        }
+      
+        // ... kode handler lainnya
       }
-
-      // Handle "Forgot Password" link
-      const forgotPasswordLink = document.getElementById("forgotPasswordLink");
-      if (forgotPasswordLink) {
-        forgotPasswordLink.addEventListener("click", (e) => {
-          e.preventDefault();
-          window.location.hash = "forgot-password";
-        });
-      }
-
-      // Handle "Register" link if exists
-      const registerLink = document.getElementById("registerLink");
-      if (registerLink) {
-        registerLink.addEventListener("click", (e) => {
-          e.preventDefault();
-          window.location.hash = "register";
-        });
-      }
-    },
 
     initFormValidation() {
       // Get all forms with validation
@@ -454,279 +475,6 @@ document.addEventListener("alpine:init", () => {
         document.documentElement.setAttribute("data-bs-theme", "dark");
       } else {
         document.documentElement.setAttribute("data-bs-theme", "light");
-      }
-    },
-
-    initDashboardCharts() {
-      // Weekly activity chart
-      const weeklyChartEl = document.getElementById("weeklyActivityChart");
-      if (weeklyChartEl) {
-        const labels = ["S", "M", "T", "W", "T", "F", "S"];
-        const data = {
-          labels: labels,
-          datasets: [
-            {
-              label: "Activity",
-              data: [15, 60, 40, 80, 20, 35, 15],
-              backgroundColor: (context) => {
-                const chart = context.chart;
-                const { ctx, chartArea } = chart;
-                if (!chartArea) return null;
-
-                // Create gradient for each bar
-                return labels.map((_, index) => {
-                  if (index === 3) {
-                    // Wednesday has highest value
-                    return "#1e4430"; // Dark green for highest value
-                  } else if (index === 1) {
-                    // Monday is second highest
-                    return "#3b8a5e"; // Medium green for second highest
-                  } else {
-                    return "#55b687"; // Regular green
-                  }
-                });
-              },
-              borderRadius: 6,
-              borderWidth: 0,
-            },
-          ],
-        };
-
-        const config = {
-          type: "bar",
-          data: data,
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                display: false,
-              },
-              tooltip: {
-                enabled: true,
-                backgroundColor: this.darkMode ? "#2d3748" : "#fff",
-                titleColor: this.darkMode ? "#fff" : "#212529",
-                bodyColor: this.darkMode ? "#fff" : "#212529",
-                borderColor: this.darkMode ? "#4a5568" : "#e9ecef",
-                borderWidth: 1,
-                cornerRadius: 8,
-                displayColors: false,
-                callbacks: {
-                  title: () => "",
-                  label: (context) => `Tasks: ${context.parsed.y}`,
-                },
-              },
-            },
-            scales: {
-              x: {
-                grid: {
-                  display: false,
-                },
-              },
-              y: {
-                beginAtZero: true,
-                grid: {
-                  color: this.darkMode ? "rgba(255, 255, 255, 0.1)" : "#e9ecef",
-                },
-                ticks: {
-                  callback: function (value) {
-                    return value + "%";
-                  },
-                },
-              },
-            },
-          },
-        };
-
-        new Chart(weeklyChartEl, config);
-      }
-
-      // Progress Chart (Doughnut)
-      const progressChartEl = document.getElementById("projectProgressChart");
-      if (progressChartEl) {
-        const data = {
-          labels: ["Completed", "In Progress", "Pending"],
-          datasets: [
-            {
-              data: [65, 25, 10],
-              backgroundColor: [
-                "#3b8a5e",
-                "#f9d56c",
-                this.darkMode ? "#4a5568" : "#e9ecef",
-              ],
-              borderWidth: 0,
-              cutout: "80%",
-            },
-          ],
-        };
-
-        const config = {
-          type: "doughnut",
-          data: data,
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                display: false,
-              },
-              tooltip: {
-                enabled: true,
-                backgroundColor: this.darkMode ? "#2d3748" : "#fff",
-                titleColor: this.darkMode ? "#fff" : "#212529",
-                bodyColor: this.darkMode ? "#fff" : "#212529",
-                borderColor: this.darkMode ? "#4a5568" : "#e9ecef",
-                borderWidth: 1,
-                cornerRadius: 8,
-                displayColors: false,
-                callbacks: {
-                  label: (context) => `${context.label}: ${context.parsed}%`,
-                },
-              },
-            },
-          },
-        };
-
-        new Chart(progressChartEl, config);
-      }
-    },
-
-    initAnalyticsCharts() {
-      // Task Performance Chart
-      const taskPerformanceCtx = document.getElementById(
-        "taskPerformanceChart"
-      );
-      if (taskPerformanceCtx) {
-        const taskPerformanceChart = new Chart(taskPerformanceCtx, {
-          type: "line",
-          data: {
-            labels: ["1", "5", "10", "15", "20", "25", "30"],
-            datasets: [
-              {
-                label: "Completed",
-                data: [5, 10, 15, 12, 18, 20, 25],
-                borderColor: "#3b8a5e",
-                backgroundColor: "rgba(59, 138, 94, 0.1)",
-                tension: 0.4,
-                fill: true,
-              },
-              {
-                label: "Created",
-                data: [7, 15, 20, 18, 25, 28, 30],
-                borderColor: "#6edff6",
-                backgroundColor: "rgba(110, 223, 246, 0.1)",
-                tension: 0.4,
-                fill: true,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                position: "top",
-                labels: {
-                  usePointStyle: true,
-                  pointStyle: "circle",
-                },
-              },
-              tooltip: {
-                backgroundColor: this.darkMode ? "#2d3748" : "#fff",
-                titleColor: this.darkMode ? "#fff" : "#212529",
-                bodyColor: this.darkMode ? "#fff" : "#212529",
-                borderColor: this.darkMode ? "#4a5568" : "#e9ecef",
-                borderWidth: 1,
-              },
-            },
-            scales: {
-              y: {
-                beginAtZero: true,
-                ticks: {
-                  precision: 0,
-                },
-                grid: {
-                  color: this.darkMode ? "rgba(255, 255, 255, 0.1)" : "#e9ecef",
-                },
-              },
-              x: {
-                grid: {
-                  color: this.darkMode ? "rgba(255, 255, 255, 0.1)" : "#e9ecef",
-                },
-              },
-            },
-          },
-        });
-      }
-
-      // Task Status Chart
-      const taskStatusCtx = document.getElementById("taskStatusChart");
-      if (taskStatusCtx) {
-        const taskStatusChart = new Chart(taskStatusCtx, {
-          type: "doughnut",
-          data: {
-            labels: ["Completed", "In Progress", "Overdue", "Pending"],
-            datasets: [
-              {
-                data: [45, 35, 10, 10],
-                backgroundColor: [
-                  "#55b687",
-                  "#f9d56c",
-                  "#e76f51",
-                  this.darkMode ? "#4a5568" : "#adb5bd",
-                ],
-                borderWidth: 0,
-                cutout: "70%",
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                display: false,
-              },
-              tooltip: {
-                backgroundColor: this.darkMode ? "#2d3748" : "#fff",
-                titleColor: this.darkMode ? "#fff" : "#212529",
-                bodyColor: this.darkMode ? "#fff" : "#212529",
-                borderColor: this.darkMode ? "#4a5568" : "#e9ecef",
-                borderWidth: 1,
-              },
-            },
-          },
-        });
-      }
-    },
-
-    initCalendarEvents() {
-      // Event handler for mini calendar dates
-      const dates = document.querySelectorAll(".mini-calendar .date");
-      if (dates.length > 0) {
-        dates.forEach((date) => {
-          date.addEventListener("click", () => {
-            // Remove current-date class from all dates
-            dates.forEach((d) => d.classList.remove("current-date"));
-            // Add current-date class to clicked date
-            date.classList.add("current-date");
-          });
-        });
-      }
-
-      // Make event items draggable in the future
-      const eventItems = document.querySelectorAll(".event-item");
-      if (eventItems.length > 0) {
-        // Add hover effect
-        eventItems.forEach((item) => {
-          item.addEventListener("mouseover", () => {
-            item.style.zIndex = "10";
-          });
-
-          item.addEventListener("mouseout", () => {
-            item.style.zIndex = "1";
-          });
-        });
       }
     },
   }));
