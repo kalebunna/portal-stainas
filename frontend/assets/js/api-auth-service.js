@@ -156,7 +156,7 @@ class AuthApiService {
     });
 
     console.log("Login successful", { hasToken: !!data.access_token });
-
+    console.log("Login data:", data.permissions);
     // Store authentication data
     if (data.access_token) {
       this.token = data.access_token;

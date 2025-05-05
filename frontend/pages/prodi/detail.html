@@ -1,0 +1,524 @@
+<div
+  class="dashboard-header d-flex justify-content-between align-items-center flex-wrap mb-4"
+  x-data="prodiDetail"
+>
+  <div>
+    <h1
+      class="dashboard-title"
+      x-text="prodi.nama || 'Detail Program Studi'"
+    ></h1>
+    <p
+      class="dashboard-subtitle"
+      x-text="`${prodi.jenjang || ''} ${prodi.kode ? '· ' + prodi.kode : ''}`"
+    ></p>
+  </div>
+
+  <div class="header-actions">
+    <template x-if="hasPermission('edit-prodi')">
+      <a :href="`#prodi/edit/${prodi.id}`" class="btn btn-primary me-2">
+        <i class="bi bi-pencil me-2"></i> Edit
+      </a>
+    </template>
+    <a href="#prodi" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left me-2"></i> Kembali
+    </a>
+  </div>
+</div>
+
+<div class="row" x-data="prodiDetail">
+  <!-- Loading State -->
+  <template x-if="loading">
+    <div class="col-12">
+      <div class="text-center p-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Memuat data program studi...</p>
+      </div>
+    </div>
+  </template>
+
+  <!-- Error State -->
+  <template x-if="error">
+    <div class="col-12">
+      <div class="p-4 text-center">
+        <div class="mb-3">
+          <i
+            class="bi bi-exclamation-triangle-fill text-danger"
+            style="font-size: 3rem"
+          ></i>
+        </div>
+        <h5 class="text-danger">Gagal Memuat Data</h5>
+        <p x-text="errorMessage" class="text-muted"></p>
+        <button @click="loadProdiData()" class="btn btn-primary">
+          <i class="bi bi-arrow-clockwise me-2"></i> Coba Lagi
+        </button>
+        <a href="#prodi" class="btn btn-outline-secondary ms-2">
+          <i class="bi bi-arrow-left me-2"></i> Kembali
+        </a>
+      </div>
+    </div>
+  </template>
+
+  <!-- Content when data is loaded -->
+  <template x-if="!loading && !error">
+    <div class="col-lg-8">
+      <!-- Informasi Dasar -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-4">
+            <h5 class="card-title mb-0">Informasi Program Studi</h5>
+            <span
+              class="badge"
+              :class="{
+                  'bg-success': prodi.akreditasi === 'A',
+                  'bg-primary': prodi.akreditasi === 'B',
+                  'bg-warning': prodi.akreditasi === 'C',
+                  'bg-secondary': prodi.akreditasi === 'Belum Terakreditasi' || !prodi.akreditasi
+                }"
+              x-text="prodi.akreditasi || 'Belum Akreditasi'"
+            >
+            </span>
+          </div>
+
+          <!-- Deskripsi -->
+          <div class="mb-4">
+            <h6 class="text-muted mb-3">Deskripsi</h6>
+            <div
+              x-html="prodi.deskripsi || '<p class=\'text-muted fst-italic\'>Belum ada deskripsi</p>'"
+            ></div>
+          </div>
+
+          <!-- Info grid -->
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <h6 class="text-muted mb-2">Durasi Studi</h6>
+              <p
+                class="mb-0"
+                x-text="prodi.durasi_tahun ? `${prodi.durasi_tahun} tahun` : '-'"
+              ></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <h6 class="text-muted mb-2">Gelar Lulusan</h6>
+              <p class="mb-0" x-text="prodi.gelar || '-'"></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <h6 class="text-muted mb-2">Ketua Program Studi</h6>
+              <p class="mb-0" x-text="prodi.ketua_prodi || '-'"></p>
+            </div>
+            <div class="col-md-6 mb-3">
+              <h6 class="text-muted mb-2">Kode</h6>
+              <p class="mb-0" x-text="prodi.kode || '-'"></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visi dan Misi -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h5 class="card-title mb-4">Visi dan Misi</h5>
+
+          <!-- Visi -->
+          <div class="mb-4">
+            <h6 class="text-muted mb-3">Visi</h6>
+            <div
+              x-html="prodi.visi || '<p class=\'text-muted fst-italic\'>Belum ada visi</p>'"
+            ></div>
+          </div>
+
+          <!-- Misi -->
+          <div>
+            <h6 class="text-muted mb-3">Misi</h6>
+            <div
+              x-html="prodi.misi || '<p class=\'text-muted fst-italic\'>Belum ada misi</p>'"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Kompetensi Lulusan -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h5 class="card-title mb-4">Kompetensi Lulusan</h5>
+          <div
+            x-html="prodi.kompetensi || '<p class=\'text-muted fst-italic\'>Belum ada data kompetensi lulusan</p>'"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Kurikulum -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h5 class="card-title mb-4">Kurikulum</h5>
+          <div
+            x-html="prodi.kurikulum || '<p class=\'text-muted fst-italic\'>Belum ada data kurikulum</p>'"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Prospek Kerja -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h5 class="card-title mb-4">Prospek Kerja</h5>
+          <div
+            x-html="prodi.prospek_kerja || '<p class=\'text-muted fst-italic\'>Belum ada data prospek kerja</p>'"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <!-- Gambar Utama -->
+      <div class="card shadow-sm mb-4">
+        <template x-if="prodi.gambar">
+          <img
+            :src="`/storage/${prodi.gambar}`"
+            class="card-img-top main-image"
+            :alt="prodi.nama"
+            onerror="this.src='https://placehold.co/600x400?text=No+Image'; this.classList.add('no-image');"
+          />
+        </template>
+        <template x-if="!prodi.gambar">
+          <div class="no-image-placeholder">
+            <i class="bi bi-image text-muted"></i>
+            <p class="text-muted mb-0">Tidak ada gambar</p>
+          </div>
+        </template>
+        <div class="card-body">
+          <div class="d-flex align-items-center mb-3">
+            <template x-if="prodi.icon">
+              <img
+                :src="`/storage/${prodi.icon}`"
+                class="prodi-icon me-3"
+                :alt="`Icon ${prodi.nama}`"
+                onerror="this.src='https://placehold.co/60x60?text=PS';"
+              />
+            </template>
+            <template x-if="!prodi.icon">
+              <div class="prodi-icon-large me-3">
+                <span
+                  x-text="prodi.nama?.substring(0, 2).toUpperCase() || 'PS'"
+                ></span>
+              </div>
+            </template>
+            <div>
+              <h5
+                class="card-title mb-1"
+                x-text="prodi.nama || 'Program Studi'"
+              ></h5>
+              <p class="text-muted mb-0" x-text="prodi.jenjang || ''"></p>
+            </div>
+          </div>
+
+          <div class="d-grid gap-2">
+            <template x-if="hasPermission('edit-prodi')">
+              <a
+                :href="`#prodi/edit/${prodi.id}`"
+                class="btn btn-outline-primary"
+              >
+                <i class="bi bi-pencil me-2"></i> Edit Program Studi
+              </a>
+            </template>
+            <template x-if="hasPermission('delete-prodi')">
+              <button @click="confirmDelete()" class="btn btn-outline-danger">
+                <i class="bi bi-trash me-2"></i> Hapus Program Studi
+              </button>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info Tambahan -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h5 class="card-title mb-3">Informasi Tambahan</h5>
+
+          <div class="mb-3">
+            <h6 class="detail-label">Tanggal Dibuat</h6>
+            <p class="mb-0" x-text="formatDate(prodi.created_at) || '-'"></p>
+          </div>
+
+          <div class="mb-3">
+            <h6 class="detail-label">Terakhir Diupdate</h6>
+            <p class="mb-0" x-text="formatDate(prodi.updated_at) || '-'"></p>
+          </div>
+
+          <div class="mb-3">
+            <h6 class="detail-label">Slug</h6>
+            <p class="mb-0" x-text="prodi.slug || '-'"></p>
+          </div>
+
+          <div>
+            <h6 class="detail-label">ID</h6>
+            <p class="mb-0" x-text="prodi.id || '-'"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div
+  class="modal fade"
+  id="deleteProdiModal"
+  tabindex="-1"
+  aria-hidden="true"
+  x-data="prodiDetail"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Konfirmasi Hapus</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Apakah Anda yakin ingin menghapus program studi
+          <strong x-text="prodi.nama || ''"></strong>?
+        </p>
+        <p class="text-danger">
+          <i class="bi bi-exclamation-triangle me-2"></i>
+          Tindakan ini tidak dapat dibatalkan dan akan menghapus semua data
+          terkait.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          data-bs-dismiss="modal"
+        >
+          Batal
+        </button>
+        <button
+          type="button"
+          class="btn btn-danger"
+          id="confirmDeleteBtn"
+          @click="deleteProdi()"
+          :disabled="deletingProdi"
+        >
+          <template x-if="deletingProdi">
+            <span
+              class="spinner-border spinner-border-sm me-2"
+              role="status"
+              aria-hidden="true"
+            ></span>
+          </template>
+          <span>Hapus Program Studi</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("alpine:init", () => {
+    Alpine.data("prodiDetail", () => ({
+      prodi: {},
+      loading: true,
+      error: false,
+      errorMessage: "",
+      slug: "",
+      deleteModal: null,
+      deletingProdi: false,
+
+      init() {
+        // Get the prodi slug from URL
+        const path = window.location.hash.substring(1);
+        const segments = path.split("/");
+
+        if (
+          segments.length >= 3 &&
+          segments[0] === "prodi" &&
+          segments[1] === "detail"
+        ) {
+          this.slug = segments[2];
+          this.loadProdiData();
+        } else {
+          this.error = true;
+          this.errorMessage = "Program studi tidak ditemukan";
+          this.loading = false;
+        }
+
+        // Initialize delete modal
+        this.deleteModal = new bootstrap.Modal(
+          document.getElementById("deleteProdiModal")
+        );
+      },
+
+      async loadProdiData() {
+        this.loading = true;
+        this.error = false;
+
+        try {
+          const response = await window.prodiService.getProdiBySlug(this.slug);
+          this.prodi = response.prodi;
+        } catch (error) {
+          console.error("Failed to load prodi data:", error);
+          this.error = true;
+          this.errorMessage =
+            error.message || "Gagal memuat data program studi";
+        } finally {
+          this.loading = false;
+        }
+      },
+
+      formatDate(dateString) {
+        if (!dateString) return "-";
+
+        const options = {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        };
+
+        return new Date(dateString).toLocaleDateString("id-ID", options);
+      },
+
+      confirmDelete() {
+        this.deleteModal.show();
+      },
+
+      async deleteProdi() {
+        if (!this.prodi.id) return;
+
+        this.deletingProdi = true;
+
+        try {
+          await window.prodiService.deleteProdi(this.prodi.id);
+
+          // Hide modal
+          this.deleteModal.hide();
+
+          // Show success notification
+          if (window.appToast) {
+            window.appToast.success(
+              `Program studi ${this.prodi.nama} berhasil dihapus`
+            );
+          }
+
+          // Redirect to list
+          window.location.hash = "prodi";
+        } catch (error) {
+          console.error("Failed to delete prodi:", error);
+
+          // Hide modal
+          this.deleteModal.hide();
+
+          if (
+            error.message &&
+            error.message.includes("has related mahasiswa")
+          ) {
+            // Show special message if prodi has related students
+            if (window.appToast) {
+              window.appToast.error(
+                `Tidak dapat menghapus program studi karena masih memiliki data mahasiswa terkait`
+              );
+            }
+          } else {
+            // Show generic error message
+            if (window.appToast) {
+              window.appToast.error(
+                `Gagal menghapus program studi: ${error.message}`
+              );
+            }
+          }
+        } finally {
+          this.deletingProdi = false;
+        }
+      },
+    }));
+  });
+</script>
+
+<style>
+  .main-image {
+    height: 230px;
+    object-fit: cover;
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  .main-image.no-image {
+    object-fit: contain;
+    padding: 2rem;
+  }
+
+  .no-image-placeholder {
+    height: 230px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--gray-100);
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  .no-image-placeholder i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .prodi-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  .prodi-icon-large {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    background-color: var(--primary-light);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 18px;
+  }
+
+  .detail-label {
+    font-size: 13px;
+    color: var(--gray-600);
+    margin-bottom: 5px;
+    font-weight: 500;
+  }
+
+  /* Format HTML content */
+  .card-body ul {
+    padding-left: 1.5rem;
+  }
+
+  .card-body h1,
+  .card-body h2,
+  .card-body h3,
+  .card-body h4,
+  .card-body h5,
+  .card-body h6 {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .card-body h1:first-child,
+  .card-body h2:first-child,
+  .card-body h3:first-child,
+  .card-body h4:first-child,
+  .card-body h5:first-child,
+  .card-body h6:first-child {
+    margin-top: 0;
+  }
+
+  .card-body p:last-child {
+    margin-bottom: 0;
+  }
+</style>

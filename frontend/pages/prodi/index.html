@@ -1,0 +1,652 @@
+<div class="dashboard-header d-flex justify-content-between align-items-center flex-wrap mb-4" x-data="prodiForm">
+    <div>
+      <h1 class="dashboard-title" x-text="isEditing ? 'Edit Program Studi' : 'Tambah Program Studi'"></h1>
+      <p class="dashboard-subtitle" x-text="isEditing ? 'Perbarui informasi program studi' : 'Tambahkan program studi baru ke sistem'"></p>
+    </div>
+    <div class="header-actions">
+      <a href="#prodi" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-left me-2"></i> Kembali
+      </a>
+    </div>
+  </div>
+  
+  <div class="row" x-data="prodiForm">
+    <div class="col-lg-8">
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white py-3">
+          <h5 class="card-title mb-0">Informasi Dasar</h5>
+        </div>
+        <div class="card-body">
+          <form id="prodiForm" class="needs-validation" novalidate enctype="multipart/form-data" @submit.prevent="saveProdi">
+            <!-- Row 1: Nama dan Jenjang -->
+            <div class="row mb-3">
+              <div class="col-md-8">
+                <label for="nama" class="form-label">Nama Program Studi <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="nama" name="nama" x-model="formData.nama" required @input="generateSlug">
+                <div class="invalid-feedback">Nama program studi wajib diisi.</div>
+                <div class="form-text" id="slug-preview" x-text="`Slug: ${slug || '-'}`"></div>
+              </div>
+              <div class="col-md-4">
+                <label for="jenjang" class="form-label">Jenjang <span class="text-danger">*</span></label>
+                <select class="form-select" id="jenjang" name="jenjang" x-model="formData.jenjang" required>
+                  <option value="">Pilih Jenjang</option>
+                  <option value="D3">D3 (Diploma)</option>
+                  <option value="D4">D4 (Sarjana Terapan)</option>
+                  <option value="S1">S1 (Sarjana)</option>
+                  <option value="S2">S2 (Magister)</option>
+                  <option value="S3">S3 (Doktor)</option>
+                </select>
+                <div class="invalid-feedback">Jenjang program studi wajib dipilih.</div>
+              </div>
+            </div>
+  
+            <!-- Row 2: Kode dan Akreditasi -->
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label for="kode" class="form-label">Kode Program Studi</label>
+                <input type="text" class="form-control" id="kode" name="kode" x-model="formData.kode">
+                <div class="form-text">Contoh: TI-001</div>
+              </div>
+              <div class="col-md-4">
+                <label for="akreditasi" class="form-label">Akreditasi</label>
+                <select class="form-select" id="akreditasi" name="akreditasi" x-model="formData.akreditasi">
+                  <option value="">Pilih Akreditasi</option>
+                  <option value="A">A (Unggul)</option>
+                  <option value="B">B (Baik Sekali)</option>
+                  <option value="C">C (Baik)</option>
+                  <option value="Belum Terakreditasi">Belum Terakreditasi</option>
+                </select>
+              </div>
+              <div class="col-md-4">
+                <label for="durasi_tahun" class="form-label">Durasi (Tahun)</label>
+                <input type="number" class="form-control" id="durasi_tahun" name="durasi_tahun" min="1" max="10" x-model="formData.durasi_tahun">
+                <div class="form-text">Lama studi normal</div>
+              </div>
+            </div>
+  
+            <!-- Row 3: Gelar dan Ketua Prodi -->
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="gelar" class="form-label">Gelar Lulusan</label>
+                <input type="text" class="form-control" id="gelar" name="gelar" x-model="formData.gelar">
+                <div class="form-text">Contoh: S.Kom (Sarjana Komputer)</div>
+              </div>
+              <div class="col-md-6">
+                <label for="ketua_prodi" class="form-label">Ketua Program Studi</label>
+                <input type="text" class="form-control" id="ketua_prodi" name="ketua_prodi" x-model="formData.ketua_prodi">
+              </div>
+            </div>
+  
+            <!-- Row 4: Deskripsi -->
+            <div class="mb-3">
+              <label for="deskripsi" class="form-label">Deskripsi Program Studi</label>
+              <textarea class="form-control" id="deskripsi" name="deskripsi" rows="4" x-model="formData.deskripsi"></textarea>
+            </div>
+  
+            <!-- Row 5: Visi -->
+            <div class="mb-3">
+              <label for="visi" class="form-label">Visi</label>
+              <textarea class="form-control" id="visi" name="visi" rows="3" x-model="formData.visi"></textarea>
+            </div>
+  
+            <!-- Row 6: Misi -->
+            <div class="mb-3">
+              <label for="misi" class="form-label">Misi</label>
+              <textarea class="form-control" id="misi" name="misi" rows="3" x-model="formData.misi"></textarea>
+              <div class="form-text">Pisahkan setiap poin dengan baris baru</div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="card shadow-sm mb-4">
+          <div class="card-header bg-white py-3">
+            <h5 class="card-title mb-0">Informasi Akademik</h5>
+          </div>
+          <div class="card-body">
+            <!-- Row 7: Kompetensi -->
+            <div class="mb-3">
+              <label for="kompetensi" class="form-label">Kompetensi Lulusan</label>
+              <textarea class="form-control" id="kompetensi" name="kompetensi" rows="4" x-model="formData.kompetensi"></textarea>
+              <div class="form-text">Deskripsikan kompetensi yang akan diperoleh lulusan</div>
+            </div>
+  
+            <!-- Row 8: Kurikulum -->
+            <div class="mb-3">
+              <label for="kurikulum" class="form-label">Kurikulum</label>
+              <textarea class="form-control" id="kurikulum" name="kurikulum" rows="4" x-model="formData.kurikulum"></textarea>
+              <div class="form-text">Jelaskan kurikulum yang diterapkan pada program studi</div>
+            </div>
+  
+            <!-- Row 9: Prospek Kerja -->
+            <div class="mb-3">
+              <label for="prospek_kerja" class="form-label">Prospek Kerja</label>
+              <textarea class="form-control" id="prospek_kerja" name="prospek_kerja" rows="4" x-model="formData.prospek_kerja"></textarea>
+              <div class="form-text">Deskripsikan peluang karir bagi lulusan</div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <div class="col-lg-4">
+        <div class="card shadow-sm mb-4 sticky-lg-top" style="top: 90px;">
+          <div class="card-header bg-white py-3">
+            <h5 class="card-title mb-0">Media & Publikasi</h5>
+          </div>
+          <div class="card-body">
+            <!-- Gambar Utama -->
+            <div class="mb-4">
+              <label for="gambar" class="form-label">Gambar Utama Program Studi</label>
+              <div 
+                class="img-upload-preview mb-3" 
+                :class="{'d-none': !gambarPreview}" 
+                id="gambarPreviewContainer"
+              >
+                <img :src="gambarPreview" alt="Preview" class="img-fluid rounded" id="gambarPreview">
+                <button 
+                  type="button" 
+                  class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2" 
+                  id="removeGambar"
+                  @click="removeGambarPreview"
+                >
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </div>
+              <div class="input-group">
+                <input 
+                  type="file" 
+                  class="form-control" 
+                  id="gambar" 
+                  name="gambar" 
+                  accept="image/*"
+                  @change="handleGambarChange"
+                >
+                <label class="input-group-text" for="gambar">Upload</label>
+              </div>
+              <div class="form-text">Format: JPG, PNG, WebP. Maks: 2MB. Rasio ideal: 16:9</div>
+              <template x-if="isEditing && formData.gambar && !newGambar">
+                <div class="form-text mt-2">
+                  <i class="bi bi-info-circle me-1"></i> Gambar saat ini:
+                  <span x-text="formData.gambar.split('/').pop()"></span>
+                </div>
+              </template>
+            </div>
+  
+            <!-- Icon Prodi -->
+            <div class="mb-4">
+              <label for="icon" class="form-label">Icon Program Studi</label>
+              <div 
+                class="icon-upload-preview mb-3 text-center" 
+                :class="{'d-none': !iconPreview}" 
+                id="iconPreviewContainer"
+              >
+                <img :src="iconPreview" alt="Icon Preview" class="img-thumbnail" style="max-width: 100px; max-height: 100px;" id="iconPreview">
+                <button 
+                  type="button" 
+                  class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2" 
+                  id="removeIcon"
+                  @click="removeIconPreview"
+                >
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </div>
+              <div class="input-group">
+                <input 
+                  type="file" 
+                  class="form-control" 
+                  id="icon" 
+                  name="icon" 
+                  accept="image/*"
+                  @change="handleIconChange"
+                >
+                <label class="input-group-text" for="icon">Upload</label>
+              </div>
+              <div class="form-text">Format: JPG, PNG, SVG. Maks: 1MB. Ukuran ideal: 512x512px</div>
+              <template x-if="isEditing && formData.icon && !newIcon">
+                <div class="form-text mt-2">
+                  <i class="bi bi-info-circle me-1"></i> Icon saat ini: 
+                  <span x-text="formData.icon.split('/').pop()"></span>
+                </div>
+              </template>
+            </div>
+  
+            <!-- Tombol Aksi -->
+            <div class="d-grid gap-2">
+              <button 
+                type="submit" 
+                class="btn btn-primary" 
+                id="submitBtn"
+                :disabled="isSubmitting"
+              >
+                <template x-if="isSubmitting">
+                  <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                </template>
+                <i class="bi bi-check-circle me-2" x-show="!isSubmitting"></i>
+                <span x-text="isEditing ? 'Update Program Studi' : 'Simpan Program Studi'"></span>
+              </button>
+              <a href="#prodi" class="btn btn-outline-secondary">
+                <i class="bi bi-x-circle me-2"></i> Batal
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  
+  <script>
+    document.addEventListener('alpine:init', () => {
+      Alpine.data('prodiForm', () => ({
+        formData: {
+          nama: '',
+          jenjang: '',
+          kode: '',
+          deskripsi: '',
+          visi: '',
+          misi: '',
+          akreditasi: '',
+          gelar: '',
+          ketua_prodi: '',
+          kompetensi: '',
+          kurikulum: '',
+          prospek_kerja: '',
+          durasi_tahun: '',
+          gambar: null,
+          icon: null
+        },
+        slug: '',
+        isEditing: false,
+        prodiId: null,
+        isSubmitting: false,
+        gambarPreview: null,
+        iconPreview: null,
+        newGambar: null,
+        newIcon: null,
+        
+        init() {
+          // Check if we're editing an existing prodi
+          const path = window.location.hash.substring(1);
+          const segments = path.split('/');
+          
+          if (segments.length >= 3 && segments[0] === 'prodi' && segments[1] === 'edit') {
+            this.isEditing = true;
+            this.prodiId = segments[2];
+            this.loadProdiData();
+          }
+          
+          // Initialize rich text editor if available
+          this.initEditor();
+        },
+        
+        async loadProdiData() {
+          try {
+            const response = await window.prodiService.getProdiById(this.prodiId);
+            
+            // Populate form with prodi data
+            const prodi = response.prodi;
+            
+            for (const key in prodi) {
+              if (Object.prototype.hasOwnProperty.call(this.formData, key)) {
+                this.formData[key] = prodi[key];
+              }
+            }
+            
+            // Set slug
+            this.slug = prodi.slug;
+            
+            // Set image previews if they exist
+            if (prodi.gambar) {
+              this.gambarPreview = `/storage/${prodi.gambar}`;
+            }
+            
+            if (prodi.icon) {
+              this.iconPreview = `/storage/${prodi.icon}`;
+            }
+            
+            // Update editors if they exist
+            this.updateEditors();
+            
+          } catch (error) {
+            console.error('Failed to load prodi data:', error);
+            
+            // Show error notification
+            if (window.appToast) {
+              window.appToast.error('Gagal memuat data program studi');
+            }
+            
+            // Redirect back to list
+            window.location.hash = 'prodi';
+          }
+        },
+        
+        initEditor() {
+          if (typeof tinymce !== 'undefined') {
+            const editorConfig = {
+              height: 300,
+              menubar: false,
+              plugins: [
+                'advlist autolink lists link image charmap preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste code help wordcount'
+              ],
+              toolbar: 'undo redo | formatselect | bold italic backcolor | ' +
+                      'alignleft aligncenter alignright alignjustify | ' +
+                      'bullist numlist outdent indent | removeformat | help'
+            };
+            
+            tinymce.init({
+              selector: '#deskripsi',
+              ...editorConfig
+            });
+            
+            tinymce.init({
+              selector: '#visi',
+              ...editorConfig
+            });
+            
+            tinymce.init({
+              selector: '#misi',
+              ...editorConfig
+            });
+            
+            tinymce.init({
+              selector: '#kompetensi',
+              ...editorConfig
+            });
+            
+            tinymce.init({
+              selector: '#kurikulum',
+              ...editorConfig
+            });
+            
+            tinymce.init({
+              selector: '#prospek_kerja',
+              ...editorConfig
+            });
+          }
+        },
+        
+        updateEditors() {
+          if (typeof tinymce !== 'undefined') {
+            setTimeout(() => {
+              if (tinymce.get('deskripsi')) {
+                tinymce.get('deskripsi').setContent(this.formData.deskripsi || '');
+              }
+              
+              if (tinymce.get('visi')) {
+                tinymce.get('visi').setContent(this.formData.visi || '');
+              }
+              
+              if (tinymce.get('misi')) {
+                tinymce.get('misi').setContent(this.formData.misi || '');
+              }
+              
+              if (tinymce.get('kompetensi')) {
+                tinymce.get('kompetensi').setContent(this.formData.kompetensi || '');
+              }
+              
+              if (tinymce.get('kurikulum')) {
+                tinymce.get('kurikulum').setContent(this.formData.kurikulum || '');
+              }
+              
+              if (tinymce.get('prospek_kerja')) {
+                tinymce.get('prospek_kerja').setContent(this.formData.prospek_kerja || '');
+              }
+            }, 500);
+          }
+        },
+        
+        generateSlug() {
+          const name = this.formData.nama.trim();
+          if (name) {
+            this.slug = name
+              .toLowerCase()
+              .replace(/[^\w\s-]/g, '')
+              .replace(/[\s_-]+/g, '-')
+              .replace(/^-+|-+$/g, '');
+          } else {
+            this.slug = '';
+          }
+        },
+        
+        handleGambarChange(event) {
+          const file = event.target.files[0];
+          if (file) {
+            // Validate file size (max 2MB)
+            if (file.size > 2 * 1024 * 1024) {
+              if (window.appToast) {
+                window.appToast.error('Ukuran file terlalu besar. Maksimal 2MB.');
+              } else {
+                alert('Ukuran file terlalu besar. Maksimal 2MB.');
+              }
+              
+              event.target.value = '';
+              return;
+            }
+            
+            // Store the new file for form submission
+            this.newGambar = file;
+            
+            // Create preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              this.gambarPreview = e.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        },
+        
+        removeGambarPreview() {
+          this.gambarPreview = null;
+          this.newGambar = null;
+          
+          // Reset file input
+          document.getElementById('gambar').value = '';
+          
+          // If editing, mark to remove existing image
+          if (this.isEditing && this.formData.gambar) {
+            this.formData.remove_gambar = true;
+          }
+        },
+        
+        handleIconChange(event) {
+          const file = event.target.files[0];
+          if (file) {
+            // Validate file size (max 1MB)
+            if (file.size > 1 * 1024 * 1024) {
+              if (window.appToast) {
+                window.appToast.error('Ukuran file terlalu besar. Maksimal 1MB.');
+              } else {
+                alert('Ukuran file terlalu besar. Maksimal 1MB.');
+              }
+              
+              event.target.value = '';
+              return;
+            }
+            
+            // Store the new file for form submission
+            this.newIcon = file;
+            
+            // Create preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              this.iconPreview = e.target.result;
+            };
+            reader.readAsDataURL(file);
+          }
+        },
+        
+        removeIconPreview() {
+          this.iconPreview = null;
+          this.newIcon = null;
+          
+          // Reset file input
+          document.getElementById('icon').value = '';
+          
+          // If editing, mark to remove existing icon
+          if (this.isEditing && this.formData.icon) {
+            this.formData.remove_icon = true;
+          }
+        },
+        
+        async saveProdi() {
+          const form = document.getElementById('prodiForm');
+          
+          if (!form.checkValidity()) {
+            form.classList.add('was-validated');
+            
+            // Scroll to first invalid element
+            const firstInvalid = form.querySelector(':invalid');
+            if (firstInvalid) {
+              firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              firstInvalid.focus();
+            }
+            
+            return;
+          }
+          
+          this.isSubmitting = true;
+          
+          try {
+            // Get content from rich text editors if available
+            if (typeof tinymce !== 'undefined') {
+              if (tinymce.get('deskripsi')) {
+                this.formData.deskripsi = tinymce.get('deskripsi').getContent();
+              }
+              
+              if (tinymce.get('visi')) {
+                this.formData.visi = tinymce.get('visi').getContent();
+              }
+              
+              if (tinymce.get('misi')) {
+                this.formData.misi = tinymce.get('misi').getContent();
+              }
+              
+              if (tinymce.get('kompetensi')) {
+                this.formData.kompetensi = tinymce.get('kompetensi').getContent();
+              }
+              
+              if (tinymce.get('kurikulum')) {
+                this.formData.kurikulum = tinymce.get('kurikulum').getContent();
+              }
+              
+              if (tinymce.get('prospek_kerja')) {
+                this.formData.prospek_kerja = tinymce.get('prospek_kerja').getContent();
+              }
+            }
+            
+            // Create FormData object to send data
+            const formData = new FormData();
+            
+            // Add all form fields to FormData
+            Object.keys(this.formData).forEach(key => {
+              if (this.formData[key] !== null && this.formData[key] !== undefined) {
+                // Skip file fields - we'll handle them separately
+                if (key !== 'gambar' && key !== 'icon') {
+                  formData.append(key, this.formData[key]);
+                }
+              }
+            });
+            
+            // Add files if they exist
+            if (this.newGambar) {
+              formData.append('gambar', this.newGambar);
+            }
+            
+            if (this.newIcon) {
+              formData.append('icon', this.newIcon);
+            }
+            
+            let response;
+            
+            if (this.isEditing) {
+              // Update existing prodi
+              response = await window.prodiService.updateProdi(this.prodiId, formData);
+              
+              if (window.appToast) {
+                window.appToast.success('Program studi berhasil diperbarui!');
+              }
+            } else {
+              // Create new prodi
+              response = await window.prodiService.createProdi(formData);
+              
+              if (window.appToast) {
+                window.appToast.success('Program studi berhasil ditambahkan!');
+              }
+            }
+            
+            // Redirect back to list
+            window.location.hash = 'prodi';
+            
+          } catch (error) {
+            console.error('Failed to save prodi:', error);
+            
+            // Show error notification
+            if (window.appToast) {
+              window.appToast.error(`Gagal menyimpan data: ${error.message}`);
+            }
+            
+          } finally {
+            this.isSubmitting = false;
+          }
+        }
+      }));
+    });
+  </script>
+  
+  <style>
+    .img-upload-preview {
+      position: relative;
+      margin-bottom: 1rem;
+      border-radius: 0.5rem;
+      overflow: hidden;
+      max-height: 200px;
+    }
+    
+    .img-upload-preview img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    
+    .icon-upload-preview {
+      position: relative;
+      border: 1px dashed var(--gray-300);
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+    
+    .form-text {
+      font-size: 0.75rem;
+      color: var(--gray-600);
+    }
+    
+    .form-label {
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+    
+    /* Animation for validation */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+      20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+    
+    .was-validated .form-control:invalid:focus,
+    .was-validated .form-select:invalid:focus {
+      animation: shake 0.6s;
+    }
+    
+    /* Custom required field indicator */
+    .text-danger {
+      font-weight: bold;
+    }
+    
+    /* Make sticky only on larger screens */
+    @media (max-width: 991.98px) {
+      .sticky-lg-top {
+        position: relative !important;
+        top: 0 !important;
+      }
+    }
+  </style>

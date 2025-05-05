@@ -6,11 +6,11 @@
 class AuthMiddleware {
   constructor() {
     this.token = localStorage.getItem("auth_token");
-    console.log("auth_token", token);
-
     this.user = JSON.parse(localStorage.getItem("user") || "null");
     this.roles = JSON.parse(localStorage.getItem("roles") || "[]");
     this.permissions = JSON.parse(localStorage.getItem("permissions") || "[]");
+
+    console.log("AuthMiddleware initialized", this.token, this.user);
 
     // Public routes that don't require authentication
     this.publicRoutes = ["login", "forgot-password", "reset-password"];
@@ -38,6 +38,8 @@ class AuthMiddleware {
    * @returns {boolean} Authentication status
    */
   isAuthenticated() {
+    console.log("Checking authentication status", this.token, this.user);
+
     return !!this.token && !!this.user;
   }
 
@@ -151,6 +153,12 @@ class AuthMiddleware {
     // Define all possible sidebar items with their permission requirements
     const allSidebarItems = [
       {
+        title: "Program Studi",
+        icon: "bi-book",
+        route: "prodi",
+        permissions: ["view-prodi"],
+      },
+      {
         title: "Dashboard",
         icon: "bi-grid-1x2-fill",
         route: "dashboard",
@@ -173,12 +181,6 @@ class AuthMiddleware {
         icon: "bi-calendar-event",
         route: "agenda",
         permissions: ["view-agenda"],
-      },
-      {
-        title: "Departments",
-        icon: "bi-buildings",
-        route: "prodi",
-        permissions: ["view-prodi"],
       },
       {
         title: "Partnerships",
