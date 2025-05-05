@@ -6,6 +6,8 @@
 class AuthMiddleware {
   constructor() {
     this.token = localStorage.getItem("auth_token");
+    console.log("auth_token", token);
+
     this.user = JSON.parse(localStorage.getItem("user") || "null");
     this.roles = JSON.parse(localStorage.getItem("roles") || "[]");
     this.permissions = JSON.parse(localStorage.getItem("permissions") || "[]");
@@ -355,5 +357,3 @@ class AuthMiddleware {
 // Create and export auth middleware instance
 const authMiddleware = new AuthMiddleware();
 window.authMiddleware = authMiddleware;
-
-export default authMiddleware;

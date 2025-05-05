@@ -36,7 +36,6 @@ document.addEventListener("alpine:init", () => {
       } else {
         this.setActivePage(hash);
       }
-INI
       // Handle navigation with hash changes
       window.addEventListener("hashchange", () => {
         const currentHash = window.location.hash.substring(1);
@@ -92,11 +91,6 @@ INI
       this.roles = roles;
       this.permissions = permissions;
 
-      console.log("Authentication state:", this.isAuthenticated);
-      console.log("User:", this.user);
-      console.log("Roles:", this.roles);
-      console.log("Permissions:", this.permissions);
-
       // Get sidebar items based on permissions
       if (this.isAuthenticated && window.authMiddleware) {
         this.sidebarItems = window.authMiddleware.getSidebarItems();
@@ -115,22 +109,41 @@ INI
 
     async logout() {
       try {
-        if (window.authMiddleware) {
+        // Try both authMiddleware (if that's your implementation) or authApiService
+        if (
+          window.authMiddleware &&
+          typeof window.authMiddleware.logout === "function"
+        ) {
           await window.authMiddleware.logout();
+        } else if (
+          window.authApiService &&
+          typeof window.authApiService.logout === "function"
+        ) {
+          await window.authApiService.logout();
+        } else {
+          console.warn(
+            "No logout service found. Performing client-side logout only."
+          );
+        }
 
-          // Update state
-          this.isAuthenticated = false;
-          this.user = null;
-          this.roles = [];
-          this.permissions = [];
+        // Clear auth data from localStorage
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("user");
+        localStorage.removeItem("roles");
+        localStorage.removeItem("permissions");
 
-          // Redirect to login
-          window.location.hash = "login";
+        // Update state
+        this.isAuthenticated = false;
+        this.user = null;
+        this.roles = [];
+        this.permissions = [];
 
-          // Show success toast
-          if (window.appToast) {
-            window.appToast.success("You have successfully logged out.");
-          }
+        // Redirect to login
+        window.location.hash = "login";
+
+        // Show success toast
+        if (window.appToast) {
+          window.appToast.success("You have successfully logged out.");
         }
       } catch (error) {
         console.error("Logout error:", error);
@@ -284,120 +297,140 @@ INI
     },
 
     initLoginHandlers() {
-        // Handle login form submission
-        const loginForm = document.getElementById("loginForm");
-        if (loginForm) {
-          loginForm.addEventListener("submit", async (event) => {
-            event.preventDefault();
-      
-            // Get form data
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
-            const remember =
-              document.getElementById("rememberMe")?.checked || false;
-      
-            // Show loading state
-            const loginButton = document.getElementById("loginButton");
-            const loginSpinner = document.getElementById("loginSpinner");
-            const loginAlert = document.getElementById("loginAlert");
-      
-            if (loginButton && loginSpinner) {
-              loginButton.disabled = true;
-              loginSpinner.classList.remove("d-none");
-            }
-      
-            if (loginAlert) {
-              loginAlert.classList.add("d-none");
-            }
-      
-            try {
-              // PERBAIKAN: Periksa ketersediaan layanan auth
-              if (window.authApiService) {
-                // Normal flow - gunakan authApiService
-                const response = await window.authApiService.login(
-                  email,
-                  password,
-                  remember
-                );
-      
-                // Update authentication state
-                this.checkAuthState();
-      
-                // Redirect to dashboard
-                window.location.hash = "dashboard";
-      
-                // Show success message
-                if (window.appToast) {
-                  window.appToast.success("Login successful!");
-                }
-              } else {
-                // FALLBACK MODE: Simulasikan login untuk development/testing
-                console.warn("Auth service not available, using development login mode");
-                
-                // Simulasikan respons login untuk pengembangan
-                // CATATAN: Ini hanya untuk development, JANGAN gunakan di production!
-                const mockUser = {
-                  id: 1,
-                  name: "Development User",
-                  email: email || "dev@example.com"
-                };
-                
-                const mockToken = "dev-token-" + Date.now();
-                
-                // Simpan data autentikasi palsu di localStorage
-                localStorage.setItem("auth_token", mockToken);
-                localStorage.setItem("user", JSON.stringify(mockUser));
-                localStorage.setItem("roles", JSON.stringify(["admin"]));
-                localStorage.setItem("permissions", JSON.stringify([
-                  "view-berita", "create-berita", "edit-berita", "delete-berita",
-                  "view-pengumuman", "view-agenda", "view-prodi", "view-kerjasama",
-                  "view-mahasiswa", "view-karya", "manage-media"
-                ]));
-                
-                // Update state autentikasi
-                this.checkAuthState();
-                
-                // Redirect ke dashboard
-                window.location.hash = "dashboard";
-                
-                // Tampilkan pesan sukses tetapi dengan warning
-                if (window.appToast) {
-                  window.appToast.warning("Development login mode activated. API service not available.");
-                } else {
-                  alert("Development login mode activated. API service not available.");
-                }
-              }
-            } catch (error) {
-              console.error("Login error:", error);
-      
-              // Show error message
-              if (loginAlert) {
-                loginAlert.classList.remove("d-none");
-                const loginAlertMessage = document.getElementById("loginAlertMessage");
-                if (loginAlertMessage) {
-                  loginAlertMessage.textContent =
-                    error.message || "Login failed. Please check your email and password.";
-                }
-              }
-      
-              // Show error toast
+      // Handle login form submission
+      const loginForm = document.getElementById("loginForm");
+      if (loginForm) {
+        loginForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          // Get form data
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+          const remember =
+            document.getElementById("rememberMe")?.checked || false;
+
+          // Show loading state
+          const loginButton = document.getElementById("loginButton");
+          const loginSpinner = document.getElementById("loginSpinner");
+          const loginAlert = document.getElementById("loginAlert");
+
+          if (loginButton && loginSpinner) {
+            loginButton.disabled = true;
+            loginSpinner.classList.remove("d-none");
+          }
+
+          if (loginAlert) {
+            loginAlert.classList.add("d-none");
+          }
+
+          try {
+            // PERBAIKAN: Periksa ketersediaan layanan auth
+            if (window.authApiService) {
+              // Normal flow - gunakan authApiService
+              const response = await window.authApiService.login(
+                email,
+                password,
+                remember
+              );
+
+              // Update authentication state
+              this.checkAuthState();
+
+              // Redirect to dashboard
+              window.location.hash = "dashboard";
+
+              // Show success message
               if (window.appToast) {
-                window.appToast.error(
-                  error.message || "Login failed. Please check your email and password."
+                window.appToast.success("Login successful!");
+              }
+            } else {
+              // FALLBACK MODE: Simulasikan login untuk development/testing
+              console.warn(
+                "Auth service not available, using development login mode"
+              );
+
+              // Simulasikan respons login untuk pengembangan
+              // CATATAN: Ini hanya untuk development, JANGAN gunakan di production!
+              const mockUser = {
+                id: 1,
+                name: "Development User",
+                email: email || "dev@example.com",
+              };
+
+              const mockToken = "dev-token-" + Date.now();
+
+              // Simpan data autentikasi palsu di localStorage
+              localStorage.setItem("auth_token", mockToken);
+              localStorage.setItem("user", JSON.stringify(mockUser));
+              localStorage.setItem("roles", JSON.stringify(["admin"]));
+              localStorage.setItem(
+                "permissions",
+                JSON.stringify([
+                  "view-berita",
+                  "create-berita",
+                  "edit-berita",
+                  "delete-berita",
+                  "view-pengumuman",
+                  "view-agenda",
+                  "view-prodi",
+                  "view-kerjasama",
+                  "view-mahasiswa",
+                  "view-karya",
+                  "manage-media",
+                ])
+              );
+
+              // Update state autentikasi
+              this.checkAuthState();
+
+              // Redirect ke dashboard
+              window.location.hash = "dashboard";
+
+              // Tampilkan pesan sukses tetapi dengan warning
+              if (window.appToast) {
+                window.appToast.warning(
+                  "Development login mode activated. API service not available."
+                );
+              } else {
+                alert(
+                  "Development login mode activated. API service not available."
                 );
               }
-            } finally {
-              // Reset loading state
-              if (loginButton && loginSpinner) {
-                loginButton.disabled = false;
-                loginSpinner.classList.add("d-none");
+            }
+          } catch (error) {
+            console.error("Login error:", error);
+
+            // Show error message
+            if (loginAlert) {
+              loginAlert.classList.remove("d-none");
+              const loginAlertMessage =
+                document.getElementById("loginAlertMessage");
+              if (loginAlertMessage) {
+                loginAlertMessage.textContent =
+                  error.message ||
+                  "Login failed. Please check your email and password.";
               }
             }
-          });
-        }
-      
-        // ... kode handler lainnya
+
+            // Show error toast
+            if (window.appToast) {
+              window.appToast.error(
+                error.message ||
+                  "Login failed. Please check your email and password."
+              );
+            }
+          } finally {
+            // Reset loading state
+            if (loginButton && loginSpinner) {
+              loginButton.disabled = false;
+              loginSpinner.classList.add("d-none");
+            }
+          }
+        });
       }
+
+      // ... kode handler lainnya
+    },
 
     initFormValidation() {
       // Get all forms with validation

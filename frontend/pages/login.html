@@ -1,102 +1,193 @@
 <div class="login-header">
-    <svg
-      class="login-logo"
-      width="60"
-      height="60"
-      viewBox="0 0 100 100"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <circle cx="50" cy="50" r="40" stroke="#2c6345" stroke-width="8" />
-      <path
-        d="M35 50L45 60L65 40"
-        stroke="#2c6345"
-        stroke-width="8"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      />
-    </svg>
-    <h1 class="login-title">Admin Dashboard</h1>
-    <p class="login-subtitle">Login to access your admin panel</p>
-  </div>
-
-  <div class="login-body">
-    <div id="loginAlert" class="alert alert-danger d-none" role="alert">
-      <i class="bi bi-exclamation-triangle-fill me-2"></i>
-      <span id="loginAlertMessage"></span>
-    </div>
-
-    <form id="loginForm">
-      <div class="mb-4">
-        <label for="email" class="form-label">Email</label>
-        <div class="input-group">
-          <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-          <input
-            type="email"
-            class="form-control"
-            id="email"
-            placeholder="Enter your email"
-            required
-          />
-        </div>
-      </div>
-
-      <div class="mb-4">
-        <label for="password" class="form-label">Password</label>
-        <div class="input-group">
-          <span class="input-group-text"><i class="bi bi-lock"></i></span>
-          <input
-            type="password"
-            class="form-control"
-            id="password"
-            placeholder="Enter your password"
-            required
-          />
-          <button
-            class="btn btn-outline-secondary toggle-password"
-            type="button"
-            tabindex="-1"
-          >
-            <i class="bi bi-eye"></i>
-          </button>
-        </div>
-      </div>
-
-      <div class="mb-4 form-check">
-        <input type="checkbox" class="form-check-input" id="rememberMe" />
-        <label class="form-check-label" for="rememberMe">Remember me</label>
-      </div>
-
-      <button type="submit" class="btn btn-primary w-100" id="loginButton">
-        <span
-          class="spinner-border spinner-border-sm d-none me-2"
-          role="status"
-          aria-hidden="true"
-          id="loginSpinner"
-        ></span>
-        Sign In
-      </button>
-    </form>
-  </div>
-
-  <div class="login-footer text-center">
-    <p>&copy; 2025 AdminDash. All rights reserved.</p>
-  </div>
+  <svg
+    class="login-logo"
+    width="60"
+    height="60"
+    viewBox="0 0 100 100"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <circle cx="50" cy="50" r="40" stroke="#2c6345" stroke-width="8" />
+    <path
+      d="M35 50L45 60L65 40"
+      stroke="#2c6345"
+      stroke-width="8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+  <h1 class="login-title">Admin Dashboard</h1>
+  <p class="login-subtitle">Login to access your admin panel</p>
 </div>
 
+<div class="login-body">
+  <div id="loginAlert" class="alert alert-danger d-none" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    <span id="loginAlertMessage"></span>
+  </div>
+
+  <form id="loginForm">
+    <div class="mb-4">
+      <label for="email" class="form-label">Email</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          placeholder="Enter your email"
+          required
+        />
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <label for="password" class="form-label">Password</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          placeholder="Enter your password"
+          required
+        />
+        <button
+          class="btn btn-outline-secondary toggle-password"
+          type="button"
+          tabindex="-1"
+        >
+          <i class="bi bi-eye"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="mb-4 form-check">
+      <input type="checkbox" class="form-check-input" id="rememberMe" />
+      <label class="form-check-label" for="rememberMe">Remember me</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100" id="loginButton">
+      <span
+        class="spinner-border spinner-border-sm d-none me-2"
+        role="status"
+        aria-hidden="true"
+        id="loginSpinner"
+      ></span>
+      Sign In
+    </button>
+  </form>
+</div>
+
+<div class="login-footer text-center">
+  <p>&copy; 2025 AdminDash. All rights reserved.</p>
+</div>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    // Toggle password visibility
+    console.log("Login page loaded");
+
+    // Ambil referensi ke elemen DOM
+    const loginForm = document.getElementById("loginForm");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const rememberMeCheckbox = document.getElementById("rememberMe");
+    const loginButton = document.getElementById("loginButton");
+    const loginSpinner = document.getElementById("loginSpinner");
+    const loginAlert = document.getElementById("loginAlert");
+    const loginAlertMessage = document.getElementById("loginAlertMessage");
+
+    // Toggle tampilan password
     const togglePasswordBtn = document.querySelector(".toggle-password");
     if (togglePasswordBtn) {
       togglePasswordBtn.addEventListener("click", function () {
-        const passwordInput = document.getElementById("password");
         const type =
-          passwordInput.getAttribute("type") === "password" ? "text" : "password";
+          passwordInput.getAttribute("type") === "password"
+            ? "text"
+            : "password";
         passwordInput.setAttribute("type", type);
         this.querySelector("i").classList.toggle("bi-eye");
         this.querySelector("i").classList.toggle("bi-eye-slash");
       });
+    }
+
+    // Handler submit form login
+    if (loginForm) {
+      loginForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        // Dapatkan nilai input
+        const email = emailInput.value;
+        const password = passwordInput.value;
+        const remember = rememberMeCheckbox?.checked || false;
+
+        // Validasi input
+        if (!email || !password) {
+          showError("Please enter both email and password");
+          return;
+        }
+
+        // Tampilkan state loading
+        showLoading(true);
+
+        try {
+          console.log(`Logging in with email: ${email}`);
+
+          // Gunakan AuthApiService untuk login
+          await authApiService.login(email, password, remember);
+
+          console.log("Login successful, redirecting to dashboard");
+
+          // Menampilkan toast sukses jika tersedia
+          if (window.appToast) {
+            window.appToast.success(
+              "Login successful! Redirecting to dashboard..."
+            );
+          }
+
+          // Redirect ke dashboard
+          window.location.hash = "dashboard";
+        } catch (error) {
+          console.error("Login error:", error);
+          showError(
+            error.message ||
+              "Login failed. Please check your credentials and try again."
+          );
+        } finally {
+          // Reset state loading
+          showLoading(false);
+        }
+      });
+    }
+
+    // Fungsi helper untuk menampilkan error
+    function showError(message) {
+      if (loginAlert && loginAlertMessage) {
+        loginAlertMessage.textContent = message;
+        loginAlert.classList.remove("d-none");
+
+        // Tambahkan animasi shake pada form
+        loginForm.classList.add("shake");
+        setTimeout(() => {
+          loginForm.classList.remove("shake");
+        }, 500);
+      }
+    }
+
+    // Fungsi helper untuk menampilkan/menyembunyikan loading
+    function showLoading(isLoading) {
+      if (loginButton && loginSpinner) {
+        loginButton.disabled = isLoading;
+
+        if (isLoading) {
+          loginSpinner.classList.remove("d-none");
+        } else {
+          loginSpinner.classList.add("d-none");
+        }
+      }
+
+      if (!isLoading && loginAlert) {
+        loginAlert.classList.add("d-none");
+      }
     }
   });
 </script>

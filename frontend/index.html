@@ -249,7 +249,7 @@
                   <li><hr class="dropdown-divider" /></li>
                   <li>
                     
-                      class="dropdown-item text-danger"
+                      <a class="dropdown-item text-danger"
                       href="#"
                       @click.prevent="logout"
                     >
@@ -274,38 +274,6 @@
 
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<!-- PENTING: Tambahkan script konfigurasi di sini -->
-<script>
-    // Application Configuration
-    window.AppConfig = {
-      // API Configuration
-      api: {
-        // Base URL for the API - CHANGE THIS TO YOUR API URL
-        baseUrl: "http://localhost:8000/api", // atau "https://your-backend-api.com"
-        
-        // API Version - if your API uses versioning
-        version: "api", // misalnya "v1" atau "api"
-        
-        // Auth endpoints
-        auth: {
-          login: "/login",
-          logout: "/logout",
-          validateToken: "/validate-token",
-          forgotPassword: "/forgot-password",
-          resetPassword: "/reset-password"
-        },
-        
-        // Content endpoints
-        content: {
-          berita: "/berita",
-          pengumuman: "/pengumuman",
-          agenda: "/agenda",
-          media: "/media"
-        }
-      }
-    };
-  </script>
   
   <!-- PENTING: Tambahkan script auth service SEBELUM script lain yang membutuhkannya -->
   <script src="assets/js/api-auth-service.js"></script>
