@@ -5,11 +5,6 @@
 
 class AuthMiddleware {
   constructor() {
-    this.token = localStorage.getItem("auth_token");
-    this.user = JSON.parse(localStorage.getItem("user") || "null");
-    this.roles = JSON.parse(localStorage.getItem("roles") || "[]");
-    this.permissions = JSON.parse(localStorage.getItem("permissions") || "[]");
-
     console.log("AuthMiddleware initialized", this.token, this.user);
 
     // Public routes that don't require authentication
@@ -18,6 +13,58 @@ class AuthMiddleware {
     // Initialize
     this.init();
   }
+  /**
+   * Get current user data
+   * @returns {object|null} User data
+   */
+  getUser() {
+    return JSON.parse(localStorage.getItem("user") || "null");
+  }
+
+  /**
+   * Get authentication token
+   * @returns {string|null} Token
+   */
+  getToken() {
+    return localStorage.getItem("auth_token");
+  }
+
+  /**
+   * Get user roles
+   * @returns {Array} Roles
+   */
+  getRoles() {
+    return JSON.parse(localStorage.getItem("roles") || "[]");
+  }
+
+  /**
+   * Get user permissions
+   * @returns {Array} Permissions
+   */
+  getPermissions() {
+    return JSON.parse(localStorage.getItem("permissions") || "[]");
+  }
+
+  /**
+   * Check if user has a specific role
+   * @param {string} roleName - Role to check
+   * @returns {boolean} Whether user has the role
+   */
+  hasRole(roleName) {
+    return this.getRoles().includes(roleName);
+  }
+
+  /**
+   * Check if user has a specific permission
+   * @param {string} permissionName - Permission to check
+   * @returns {boolean} Whether user has the permission
+   */
+  hasPermission(permissionName) {
+    console.log("Checking permission", permissionName, this.getPermissions());
+    return this.getPermissions().includes(permissionName);
+  }
+
+  // ... (method lainnya tetap sama)
 
   /**
    * Initialize middleware
@@ -38,9 +85,10 @@ class AuthMiddleware {
    * @returns {boolean} Authentication status
    */
   isAuthenticated() {
-    console.log("Checking authentication status", this.token, this.user);
-
-    return !!this.token && !!this.user;
+    const token = this.getToken();
+    const user = this.getUser();
+    console.log("Checking authentication status", token, user);
+    return !!token && !!user;
   }
 
   /**
@@ -105,44 +153,6 @@ class AuthMiddleware {
       }
       return;
     }
-
-    // Check role-based access for specific routes
-    // Add route-specific permission checks here as needed
-
-    // Example: Only allow users with 'admin' role to access settings
-    if (currentRoute === "settings" && !this.hasRole("admin")) {
-      window.location.hash = "dashboard";
-      if (window.appToast) {
-        window.appToast.error("You don't have permission to access settings.");
-      }
-      return;
-    }
-
-    // Check specific permissions for other routes
-    if (currentRoute === "berita" && !this.hasPermission("view-berita")) {
-      window.location.hash = "dashboard";
-      if (window.appToast) {
-        window.appToast.error(
-          "You don't have permission to access the news page."
-        );
-      }
-      return;
-    }
-
-    if (
-      currentRoute === "pengumuman" &&
-      !this.hasPermission("view-pengumuman")
-    ) {
-      window.location.hash = "dashboard";
-      if (window.appToast) {
-        window.appToast.error(
-          "You don't have permission to access the announcements page."
-        );
-      }
-      return;
-    }
-
-    // Add other permission checks as needed for remaining routes
   }
 
   /**

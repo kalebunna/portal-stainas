@@ -325,77 +325,23 @@ document.addEventListener("alpine:init", () => {
 
           try {
             // PERBAIKAN: Periksa ketersediaan layanan auth
-            if (window.authApiService) {
-              // Normal flow - gunakan authApiService
-              const response = await window.authApiService.login(
-                email,
-                password,
-                remember
-              );
 
-              // Update authentication state
-              this.checkAuthState();
+            // Normal flow - gunakan authApiService
+            const response = await window.authApiService.login(
+              email,
+              password,
+              remember
+            );
 
-              // Redirect to dashboard
-              window.location.hash = "dashboard";
+            // Update authentication state
+            this.checkAuthState();
 
-              // Show success message
-              if (window.appToast) {
-                window.appToast.success("Login successful!");
-              }
-            } else {
-              // FALLBACK MODE: Simulasikan login untuk development/testing
-              console.warn(
-                "Auth service not available, using development login mode"
-              );
+            // Redirect to dashboard
+            window.location.hash = "dashboard";
 
-              // Simulasikan respons login untuk pengembangan
-              // CATATAN: Ini hanya untuk development, JANGAN gunakan di production!
-              const mockUser = {
-                id: 1,
-                name: "Development User",
-                email: email || "dev@example.com",
-              };
-
-              const mockToken = "dev-token-" + Date.now();
-
-              // Simpan data autentikasi palsu di localStorage
-              localStorage.setItem("auth_token", mockToken);
-              localStorage.setItem("user", JSON.stringify(mockUser));
-              localStorage.setItem("roles", JSON.stringify(["admin"]));
-              localStorage.setItem(
-                "permissions",
-                JSON.stringify([
-                  "view-berita",
-                  "create-berita",
-                  "edit-berita",
-                  "delete-berita",
-                  "view-pengumuman",
-                  "view-agenda",
-                  "view-prodi",
-                  "view-kerjasama",
-                  "view-mahasiswa",
-                  "view-karya",
-                  "manage-media",
-                ])
-              );
-
-              // Update state autentikasi
-              this.checkAuthState();
-
-              // Redirect ke dashboard
-              window.location.hash = "dashboard";
-
-              // Tampilkan pesan sukses tetapi dengan warning
-              if (window.appToast) {
-                window.appToast.warning(
-                  "Development login mode activated. API service not available."
-                );
-              } else {
-                alert(
-                  "Development login mode activated. API service not available."
-                );
-              }
+            // Show success message
+            if (window.appToast) {
+              window.appToast.success("Login successful!");
             }
           } catch (error) {
             console.error("Login error:", error);
