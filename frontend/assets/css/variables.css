@@ -1,0 +1,57 @@
+:root {
+  /* Color system */
+  --primary: #2c6345;
+  --primary-light: #3b8a5e;
+  --primary-dark: #1e4430;
+  --secondary: #f8f9fa;
+  --secondary-light: #ffffff;
+  --secondary-dark: #e9ecef;
+  --success: #55b687;
+  --info: #6edff6;
+  --warning: #f9d56c;
+  --danger: #e76f51;
+  --light: #f8f9fa;
+  --dark: #212529;
+  --gray-100: #f8f9fa;
+  --gray-200: #e9ecef;
+  --gray-300: #dee2e6;
+  --gray-400: #ced4da;
+  --gray-500: #adb5bd;
+  --gray-600: #6c757d;
+  --gray-700: #495057;
+  --gray-800: #343a40;
+  --gray-900: #212529;
+
+  /* Typography */
+  --font-family-sans-serif: "Inter", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Layout */
+  --header-height: 70px;
+  --sidebar-width: 260px;
+  --sidebar-collapsed-width: 70px;
+  --content-padding: 1.5rem;
+  --border-radius: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-sm: 4px;
+  --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08);
+  --box-shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --box-shadow-lg: 0 1rem 3rem rgba(0, 0, 0, 0.1);
+  --transition-base: all 0.2s ease-in-out;
+
+  /* Z-index */
+  --z-index-dropdown: 1000;
+  --z-index-sticky: 1020;
+  --z-index-fixed: 1030;
+  --z-index-modal-backdrop: 1040;
+  --z-index-modal: 1050;
+  --z-index-popover: 1060;
+  --z-index-tooltip: 1070;
+}

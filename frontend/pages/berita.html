@@ -1,0 +1,489 @@
+<div
+  class="dashboard-header d-flex justify-content-between align-items-center flex-wrap"
+>
+  <div>
+    <h1 class="dashboard-title">Berita</h1>
+    <p class="dashboard-subtitle">Kelola berita dan artikel untuk situs</p>
+  </div>
+
+  <div class="header-actions">
+    <template x-if="hasPermission('create-berita')">
+      <button
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#addBeritaModal"
+      >
+        <i class="bi bi-plus-lg me-2"></i> Tambah Berita
+      </button>
+    </template>
+  </div>
+</div>
+
+<div class="row mb-4">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th scope="col" width="60px">No</th>
+                <th scope="col">Judul</th>
+                <th scope="col">Kategori</th>
+                <th scope="col">Tanggal</th>
+                <th scope="col">Status</th>
+                <th scope="col" width="150px">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="beritaTableBody">
+              <!-- Data will be inserted here -->
+              <tr>
+                <td>1</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0 me-3">
+                      <img
+                        src="https://placehold.co/60x40"
+                        alt="Thumbnail"
+                        class="img-thumbnail"
+                      />
+                    </div>
+                    <div>
+                      <h6 class="mb-0">
+                        Pertemuan Rektor dengan Mahasiswa Baru
+                      </h6>
+                      <small class="text-muted">Oleh: Administrator</small>
+                    </div>
+                  </div>
+                </td>
+                <td>Akademik</td>
+                <td>03 Mei 2025</td>
+                <td><span class="badge bg-success">Published</span></td>
+                <td>
+                  <div class="btn-group" role="group">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-primary"
+                      data-bs-toggle="tooltip"
+                      title="View"
+                    >
+                      <i class="bi bi-eye"></i>
+                    </button>
+                    <template x-if="hasPermission('edit-berita')">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary"
+                        data-bs-toggle="tooltip"
+                        title="Edit"
+                      >
+                        <i class="bi bi-pencil"></i>
+                      </button>
+                    </template>
+                    <template x-if="hasPermission('delete-berita')">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-danger"
+                        data-bs-toggle="tooltip"
+                        title="Delete"
+                      >
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </template>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0 me-3">
+                      <img
+                        src="https://placehold.co/60x40"
+                        alt="Thumbnail"
+                        class="img-thumbnail"
+                      />
+                    </div>
+                    <div>
+                      <h6 class="mb-0">
+                        Prestasi Tim Robotik dalam Kompetisi Internasional
+                      </h6>
+                      <small class="text-muted">Oleh: Administrator</small>
+                    </div>
+                  </div>
+                </td>
+                <td>Prestasi</td>
+                <td>02 Mei 2025</td>
+                <td><span class="badge bg-success">Published</span></td>
+                <td>
+                  <div class="btn-group" role="group">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-primary"
+                      data-bs-toggle="tooltip"
+                      title="View"
+                    >
+                      <i class="bi bi-eye"></i>
+                    </button>
+                    <template x-if="hasPermission('edit-berita')">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary"
+                        data-bs-toggle="tooltip"
+                        title="Edit"
+                      >
+                        <i class="bi bi-pencil"></i>
+                      </button>
+                    </template>
+                    <template x-if="hasPermission('delete-berita')">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-danger"
+                        data-bs-toggle="tooltip"
+                        title="Delete"
+                      >
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </template>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <div class="flex-shrink-0 me-3">
+                      <img
+                        src="https://placehold.co/60x40"
+                        alt="Thumbnail"
+                        class="img-thumbnail"
+                      />
+                    </div>
+                    <div>
+                      <h6 class="mb-0">
+                        Kunjungan Industri ke PT Teknologi Maju
+                      </h6>
+                      <small class="text-muted">Oleh: Administrator</small>
+                    </div>
+                  </div>
+                </td>
+                <td>Kegiatan</td>
+                <td>30 April 2025</td>
+                <td><span class="badge bg-success">Published</span></td>
+                <td>
+                  <div class="btn-group" role="group">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-primary"
+                      data-bs-toggle="tooltip"
+                      title="View"
+                    >
+                      <i class="bi bi-eye"></i>
+                    </button>
+                    <template x-if="hasPermission('edit-berita')">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary"
+                        data-bs-toggle="tooltip"
+                        title="Edit"
+                      >
+                        <i class="bi bi-pencil"></i>
+                      </button>
+                    </template>
+                    <template x-if="hasPermission('delete-berita')">
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-danger"
+                        data-bs-toggle="tooltip"
+                        title="Delete"
+                      >
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </template>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div
+        class="card-footer bg-white py-3 d-flex justify-content-between align-items-center"
+      >
+        <div>
+          <span>Showing 1 to 3 of 15 entries</span>
+        </div>
+        <nav aria-label="Page navigation">
+          <ul class="pagination mb-0">
+            <li class="page-item disabled">
+              <a class="page-link" href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+              </a>
+            </li>
+            <li class="page-item active">
+              <a class="page-link" href="#">1</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+              <a class="page-link" href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Berita Modal -->
+<div
+  class="modal fade"
+  id="addBeritaModal"
+  tabindex="-1"
+  aria-labelledby="addBeritaModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addBeritaModalLabel">Tambah Berita Baru</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="addBeritaForm" class="needs-validation" novalidate>
+          <div class="mb-3">
+            <label for="beritaTitle" class="form-label"
+              >Judul Berita <span class="text-danger">*</span></label
+            >
+            <input type="text" class="form-control" id="beritaTitle" required />
+            <div class="invalid-feedback">Judul berita wajib diisi.</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="beritaCategory" class="form-label"
+              >Kategori <span class="text-danger">*</span></label
+            >
+            <select class="form-select" id="beritaCategory" required>
+              <option value="">Pilih Kategori</option>
+              <option value="Akademik">Akademik</option>
+              <option value="Kegiatan">Kegiatan</option>
+              <option value="Prestasi">Prestasi</option>
+              <option value="Pengumuman">Pengumuman</option>
+            </select>
+            <div class="invalid-feedback">Silakan pilih kategori berita.</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="beritaImage" class="form-label">Gambar Berita</label>
+            <input
+              class="form-control"
+              type="file"
+              id="beritaImage"
+              accept="image/*"
+            />
+            <small class="text-muted"
+              >Ukuran maksimal 2MB. Format: JPG, PNG, WebP</small
+            >
+          </div>
+
+          <div class="mb-3">
+            <label for="beritaContent" class="form-label"
+              >Konten <span class="text-danger">*</span></label
+            >
+            <textarea
+              class="form-control"
+              id="beritaContent"
+              rows="6"
+              required
+            ></textarea>
+            <div class="invalid-feedback">Konten berita wajib diisi.</div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="beritaDate" class="form-label"
+                >Tanggal Publikasi</label
+              >
+              <input type="date" class="form-control" id="beritaDate" />
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="beritaStatus" class="form-label">Status</label>
+              <select class="form-select" id="beritaStatus">
+                <option value="draft">Draft</option>
+                <option value="published" selected>Published</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="beritaTags" class="form-label">Tags</label>
+            <input
+              type="text"
+              class="form-control"
+              id="beritaTags"
+              placeholder="Masukkan tag dipisahkan dengan koma"
+            />
+            <small class="text-muted"
+              >Contoh: kampus, mahasiswa, prestasi</small
+            >
+          </div>
+
+          <div class="form-check mb-3">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="beritaFeatured"
+            />
+            <label class="form-check-label" for="beritaFeatured">
+              Tampilkan di halaman utama
+            </label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Batal
+        </button>
+        <button type="button" class="btn btn-primary" id="saveBeritaBtn">
+          Simpan Berita
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Initialize editor (if available)
+    if (typeof tinymce !== "undefined") {
+      tinymce.init({
+        selector: "#beritaContent",
+        height: 300,
+        plugins:
+          "advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table code help wordcount",
+        toolbar:
+          "undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help",
+        content_style:
+          "body { font-family: -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; font-size: 14px; }",
+      });
+    }
+
+    // Form validation and submission
+    const form = document.getElementById("addBeritaForm");
+    const saveBtn = document.getElementById("saveBeritaBtn");
+
+    if (saveBtn) {
+      saveBtn.addEventListener("click", function () {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+          form.classList.add("was-validated");
+          return;
+        }
+
+        // Here you would normally submit the form data to your API
+        // For this example, we'll just show a success message
+
+        // Close modal
+        const modal = bootstrap.Modal.getInstance(
+          document.getElementById("addBeritaModal")
+        );
+        modal.hide();
+
+        // Show success message
+        if (window.appToast) {
+          window.appToast.success("Berita berhasil disimpan!");
+        }
+      });
+    }
+
+    // Handle image preview
+    const imageInput = document.getElementById("beritaImage");
+    if (imageInput) {
+      imageInput.addEventListener("change", function (e) {
+        const file = e.target.files[0];
+
+        if (file) {
+          // Validate file size
+          if (file.size > 2 * 1024 * 1024) {
+            imageInput.value = ""; // Clear the input
+
+            if (window.appToast) {
+              window.appToast.error("Ukuran file terlalu besar. Maksimal 2MB.");
+            }
+            return;
+          }
+
+          // Validate file type
+          const validTypes = ["image/jpeg", "image/png", "image/webp"];
+          if (!validTypes.includes(file.type)) {
+            imageInput.value = ""; // Clear the input
+
+            if (window.appToast) {
+              window.appToast.error(
+                "Format file tidak didukung. Gunakan JPG, PNG, atau WebP."
+              );
+            }
+            return;
+          }
+        }
+      });
+    }
+
+    // Initialize tooltips
+    const tooltipTriggerList = document.querySelectorAll(
+      '[data-bs-toggle="tooltip"]'
+    );
+    const tooltipList = [...tooltipTriggerList].map(
+      (tooltipTriggerEl) => new bootstrap.Tooltip(tooltipTriggerEl)
+    );
+  });
+
+  // Load berita data from API (Mock implementation)
+  async function loadBeritaData() {
+    try {
+      // Here you would fetch data from your API
+      // For this example, we're using the data already in the table
+      // Example of how to fetch:
+      /*
+        const response = await fetch('/api/berita', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+                'Accept': 'application/json'
+            }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            // Render data to table
+            renderBeritaTable(data);
+        }
+        */
+    } catch (error) {
+      console.error("Error loading berita data:", error);
+
+      if (window.appToast) {
+        window.appToast.error("Gagal memuat data berita. Silakan coba lagi.");
+      }
+    }
+  }
+
+  // Simulated function to render berita table
+  function renderBeritaTable(data) {
+    // Implementation would go here
+  }
+</script>
+
+<style>
+  .img-thumbnail {
+    object-fit: cover;
+    width: 60px;
+    height: 40px;
+  }
+</style>

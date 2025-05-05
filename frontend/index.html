@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AdminDash | Modern Admin Dashboard</title>
+
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#2c6345" />
+    <meta
+      name="description"
+      content="A modern admin dashboard built with Bootstrap 5 and Alpine.js"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="AdminDash" />
+
+    <!-- Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Custom CSS -->
+    <link href="assets/css/variables.css" rel="stylesheet" />
+    <link href="assets/css/custom.css" rel="stylesheet" />
+
+    <!-- Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css"
+    />
+
+    <!-- Favicons -->
+    <link rel="icon" href="/assets/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="/assets/img/icons/icon-192x192.png" />
+
+    <!-- Alpine.js -->
+    <script
+      defer
+      src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+  </head>
+  <body x-data="appData">
+    <div class="app-container" x-cloak x-show="true">
+      <!-- Sidebar - Only show when authenticated, except for login page -->
+      <aside
+        class="sidebar"
+        :class="{'sidebar-collapsed': sidebarCollapsed, 'show': sidebarMobileOpen}"
+        x-show="isAuthenticated && activePage !== 'login'"
+      >
+        <div class="sidebar-header">
+          <div class="logo-container">
+            <svg
+              class="logo"
+              width="32"
+              height="32"
+              viewBox="0 0 100 100"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle
+                cx="50"
+                cy="50"
+                r="40"
+                stroke="currentColor"
+                stroke-width="8"
+              />
+              <path
+                d="M35 50L45 60L65 40"
+                stroke="currentColor"
+                stroke-width="8"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <span class="logo-text" :class="{'d-none': sidebarCollapsed}"
+              >AdminDash</span
+            >
+          </div>
+          <button @click="toggleSidebar" class="sidebar-toggle btn">
+            <i
+              class="bi"
+              :class="sidebarCollapsed ? 'bi-chevron-right' : 'bi-chevron-left'"
+            ></i>
+          </button>
+        </div>
+
+        <div class="sidebar-content">
+          <template x-if="isAuthenticated">
+            <!-- Menu Items based on Permissions -->
+            <div class="sidebar-section">
+              <span
+                class="sidebar-section-title"
+                :class="{'d-none': sidebarCollapsed}"
+                >MENU</span
+              >
+              <nav class="sidebar-nav">
+                <!-- Dynamic sidebar items based on permissions -->
+                <template x-for="item in sidebarItems" :key="item.route">
+                  <a
+                    :href="'#' + item.route"
+                    @click="setActivePage(item.route)"
+                    class="sidebar-link"
+                    :class="{'active': activePage === item.route}"
+                  >
+                    <i class="bi" :class="item.icon"></i>
+                    <span
+                      :class="{'d-none': sidebarCollapsed}"
+                      x-text="item.title"
+                    ></span>
+                    <span
+                      class="badge"
+                      :class="{'ms-auto': !sidebarCollapsed, 'mx-auto': sidebarCollapsed}"
+                      x-show="item.badge"
+                      x-text="item.badge"
+                    ></span>
+                  </a>
+                </template>
+              </nav>
+            </div>
+          </template>
+
+          <!-- Public navigation items (login, etc.) -->
+          <template x-if="!isAuthenticated">
+            <div class="sidebar-section">
+              <span
+                class="sidebar-section-title"
+                :class="{'d-none': sidebarCollapsed}"
+                >ACCESS</span
+              >
+              <nav class="sidebar-nav">
+                <a
+                  href="#login"
+                  @click="setActivePage('login')"
+                  class="sidebar-link"
+                  :class="{'active': activePage === 'login'}"
+                >
+                  <i class="bi bi-box-arrow-in-right"></i>
+                  <span :class="{'d-none': sidebarCollapsed}">Login</span>
+                </a>
+              </nav>
+            </div>
+          </template>
+        </div>
+
+        <template x-if="isAuthenticated">
+          <div
+            class="sidebar-footer"
+            :class="{'justify-content-center': sidebarCollapsed}"
+          >
+            <div
+              class="user-profile d-flex align-items-center w-100"
+              :class="{'justify-content-center': sidebarCollapsed}"
+            >
+              <div class="user-avatar rounded-circle">
+                <img src="https://placehold.co/40x40" alt="User" />
+              </div>
+              <div class="user-info ms-2" x-show="!sidebarCollapsed">
+                <div class="user-name" x-text="user?.name || 'User'"></div>
+                <div
+                  class="user-role"
+                  x-text="roles.length > 0 ? roles[0] : 'User'"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </aside>
+
+      <!-- Main Content -->
+      <main
+        class="main-content"
+        :class="{'login-page': !isAuthenticated && activePage === 'login'}"
+      >
+        <!-- Header - Only show when authenticated -->
+        <header
+          class="header"
+          x-show="isAuthenticated && activePage !== 'login'"
+        >
+          <div class="d-flex align-items-center">
+            <button
+              @click="toggleMobileSidebar"
+              class="d-md-none btn icon-btn me-2"
+            >
+              <i class="bi bi-list"></i>
+            </button>
+            <div class="search-container">
+              <i class="bi bi-search"></i>
+              <input type="text" class="search-input" placeholder="Search..." />
+              <div class="search-shortcut">⌘ F</div>
+            </div>
+          </div>
+
+          <div class="header-actions">
+            <button
+              class="btn icon-btn"
+              data-bs-toggle="tooltip"
+              title="Toggle Dark Mode"
+              @click="toggleDarkMode"
+            >
+              <i class="bi" :class="darkMode ? 'bi-sun' : 'bi-moon'"></i>
+            </button>
+            <button
+              class="btn icon-btn"
+              data-bs-toggle="tooltip"
+              title="Notifications"
+            >
+              <i class="bi bi-bell"></i>
+              <span class="badge">3</span>
+            </button>
+            <div class="dropdown">
+              <button
+                class="btn icon-btn"
+                type="button"
+                id="userDropdown"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                data-bs-toggle="tooltip"
+                title="User Menu"
+              >
+                <i class="bi bi-person-circle"></i>
+              </button>
+              <ul
+                class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="userDropdown"
+              >
+                <li>
+                  <div class="dropdown-user-details px-3 py-2">
+                    <div class="d-flex align-items-center">
+                      <div class="user-avatar rounded-circle me-2">
+                        <img src="https://placehold.co/40x40" alt="User" />
+                      </div>
+                      <div>
+                        <h6 class="mb-0" x-text="user?.name || 'User'"></h6>
+                        <small
+                          class="text-muted"
+                          x-text="user?.email || 'user@example.com'"
+                        ></small>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item" href="#profile"
+                    ><i class="bi bi-person me-2"></i> Profile</a
+                  >
+                </li>
+                <li>
+                  <a class="dropdown-item" href="#settings"
+                    ><i class="bi bi-gear me-2"></i> Settings</a
+                  >
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a
+                    class="dropdown-item text-danger"
+                    href="#"
+                    @click.prevent="logout"
+                  >
+                    <i class="bi bi-box-arrow-right me-2"></i> Sign Out
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </header>
+
+        <!-- Content Area -->
+        <div
+          class="content-area"
+          :class="{'login-container': !isAuthenticated && activePage === 'login'}"
+          x-html="pageContent"
+        >
+          <!-- Page content will be loaded here -->
+        </div>
+      </main>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Custom JS -->
+    <script src="assets/js/auth-middleware.js"></script>
+    <script src="assets/js/app.js"></script>
+    <script src="assets/js/alpine-init.js"></script>
+
+    <!-- Register Service Worker -->
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", function () {
+          navigator.serviceWorker
+            .register("/service-worker.js")
+            .then(function (registration) {
+              console.log(
+                "ServiceWorker registration successful with scope: ",
+                registration.scope
+              );
+            })
+            .catch(function (error) {
+              console.log("ServiceWorker registration failed: ", error);
+            });
+        });
+      }
+    </script>
+  </body>
+</html>

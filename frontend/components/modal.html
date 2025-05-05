@@ -1,0 +1,143 @@
+<!-- Custom Modal Component -->
+<div class="modal fade" id="appModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle">Modal Title</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Modal content will be inserted here -->
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          data-bs-dismiss="modal"
+        >
+          Cancel
+        </button>
+        <button type="button" class="btn btn-primary" id="modalConfirm">
+          Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal utility functions -->
+<script>
+  // Modal utility functions
+  const appModal = {
+    modal: null,
+
+    // Initialize modal
+    init() {
+      this.modal = new bootstrap.Modal(document.getElementById("appModal"));
+
+      // Set up event listeners
+      document.getElementById("modalConfirm").addEventListener("click", () => {
+        if (typeof this.onConfirm === "function") {
+          this.onConfirm();
+        }
+        this.hide();
+      });
+
+      // Reset on hide
+      document
+        .getElementById("appModal")
+        .addEventListener("hidden.bs.modal", () => {
+          this.onConfirm = null;
+        });
+    },
+
+    // Show modal with custom options
+    show({ title, content, confirmText, cancelText, onConfirm }) {
+      // Set title
+      if (title) {
+        document.getElementById("modalTitle").textContent = title;
+      }
+
+      // Set content
+      if (content) {
+        document.getElementById("modalBody").innerHTML = content;
+      }
+
+      // Set confirm button text
+      if (confirmText) {
+        document.getElementById("modalConfirm").textContent = confirmText;
+      } else {
+        document.getElementById("modalConfirm").textContent = "Confirm";
+      }
+
+      // Set cancel button text
+      if (cancelText) {
+        const cancelBtn = document.querySelector('[data-bs-dismiss="modal"]');
+        cancelBtn.textContent = cancelText;
+      } else {
+        const cancelBtn = document.querySelector('[data-bs-dismiss="modal"]');
+        cancelBtn.textContent = "Cancel";
+      }
+
+      // Set confirm callback
+      if (onConfirm && typeof onConfirm === "function") {
+        this.onConfirm = onConfirm;
+      }
+
+      // Show modal
+      this.modal.show();
+    },
+
+    // Hide modal
+    hide() {
+      this.modal.hide();
+    },
+
+    // Alert modal (only confirm button)
+    alert(title, message) {
+      // Hide cancel button
+      const cancelBtn = document.querySelector('[data-bs-dismiss="modal"]');
+      cancelBtn.style.display = "none";
+
+      // Show as alert
+      this.show({
+        title: title || "Alert",
+        content: `<p>${message}</p>`,
+        confirmText: "OK",
+      });
+
+      // Reset cancel button on hide
+      document.getElementById("appModal").addEventListener(
+        "hidden.bs.modal",
+        () => {
+          cancelBtn.style.display = "block";
+        },
+        { once: true }
+      );
+    },
+
+    // Confirm modal (yes/no)
+    confirm(title, message, onConfirm) {
+      this.show({
+        title: title || "Confirm",
+        content: `<p>${message}</p>`,
+        confirmText: "Yes",
+        cancelText: "No",
+        onConfirm,
+      });
+    },
+  };
+
+  // Initialize when DOM is loaded
+  document.addEventListener("DOMContentLoaded", () => {
+    appModal.init();
+
+    // Add to window for global access
+    window.appModal = appModal;
+  });
+</script>

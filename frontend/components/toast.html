@@ -1,0 +1,190 @@
+<!-- Toast Container -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+  <!-- Toast templates will be inserted here dynamically -->
+</div>
+
+<!-- Toast Utility Script -->
+<script>
+  // Toast notification utility
+  const appToast = {
+    container: null,
+    toastCount: 0,
+
+    // Initialize
+    init() {
+      this.container = document.querySelector(".toast-container");
+      if (!this.container) {
+        this.container = document.createElement("div");
+        this.container.className =
+          "toast-container position-fixed bottom-0 end-0 p-3";
+        document.body.appendChild(this.container);
+      }
+    },
+
+    // Create and show toast
+    show({
+      title,
+      message,
+      type = "primary",
+      duration = 3000,
+      closeable = true,
+    }) {
+      // Generate unique ID
+      const id = `toast-${Date.now()}-${this.toastCount++}`;
+
+      // Determine icon based on type
+      let icon = "info-circle";
+      switch (type) {
+        case "success":
+          icon = "check-circle";
+          break;
+        case "danger":
+          icon = "exclamation-triangle";
+          break;
+        case "warning":
+          icon = "exclamation-circle";
+          break;
+        case "info":
+          icon = "info-circle";
+          break;
+      }
+
+      // Create toast element
+      const toast = document.createElement("div");
+      toast.className = `toast show fade-in border-0 my-2`;
+      toast.setAttribute("role", "alert");
+      toast.setAttribute("aria-live", "assertive");
+      toast.setAttribute("aria-atomic", "true");
+      toast.id = id;
+
+      // Create toast content
+      toast.innerHTML = `
+          <div class="toast-header bg-${type} text-white">
+            <i class="bi bi-${icon} me-2"></i>
+            <strong class="me-auto">${title || "Notification"}</strong>
+            <small>${new Date().toLocaleTimeString()}</small>
+            ${
+              closeable
+                ? '<button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>'
+                : ""
+            }
+          </div>
+          <div class="toast-body">
+            ${message}
+          </div>
+        `;
+
+      // Add to container
+      this.container.appendChild(toast);
+
+      // Auto-hide after duration
+      if (duration > 0) {
+        setTimeout(() => {
+          this.hide(id);
+        }, duration);
+      }
+
+      return id;
+    },
+
+    // Hide toast
+    hide(id) {
+      const toast = document.getElementById(id);
+      if (toast) {
+        // Add fade-out animation
+        toast.classList.remove("fade-in");
+        toast.classList.add("fade-out");
+
+        // Remove after animation
+        setTimeout(() => {
+          if (toast.parentNode) {
+            toast.parentNode.removeChild(toast);
+          }
+        }, 300);
+      }
+    },
+
+    // Shorthand methods for different toast types
+    success(message, title = "Success", duration = 3000) {
+      return this.show({ title, message, type: "success", duration });
+    },
+
+    error(message, title = "Error", duration = 5000) {
+      return this.show({ title, message, type: "danger", duration });
+    },
+
+    warning(message, title = "Warning", duration = 4000) {
+      return this.show({ title, message, type: "warning", duration });
+    },
+
+    info(message, title = "Information", duration = 3000) {
+      return this.show({ title, message, type: "info", duration });
+    },
+  };
+
+  // Initialize when DOM is loaded
+  document.addEventListener("DOMContentLoaded", () => {
+    appToast.init();
+
+    // Add to window for global access
+    window.appToast = appToast;
+  });
+</script>
+
+<style>
+  .toast-container {
+    z-index: 1060;
+  }
+
+  .toast {
+    max-width: 350px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+  }
+
+  .toast-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .toast-body {
+    padding: 1rem;
+    background-color: white;
+  }
+
+  .fade-in {
+    animation: fadeInUp 0.3s ease-out forwards;
+  }
+
+  .fade-out {
+    animation: fadeOutDown 0.3s ease-out forwards;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeOutDown {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+  }
+
+  /* Dark mode styles */
+  [data-bs-theme="dark"] .toast-body {
+    background-color: #2d3748;
+    color: #e2e8f0;
+  }
+</style>
